@@ -310,7 +310,7 @@ const L = {
   retail:"بازار بھاؤ",wholesale:"منڈی بھاؤ",rs:"روپے",perkg:"فی کلو",perdozen:"فی درجن",perpiece:"فی دانہ",perbundle:"فی گڈی",
   na:"آج دستیاب نہیں",srch:"تلاش کریں: کیلا، آلو، aam, tomato…",loading:"ماڈل لوڈ ہو رہا ہے…",
   landGov:"حکومتِ سندھ",landIssuer:"کمشنر کراچی ڈویژن",landTitle:"پھل و سبزیوں کے یومیہ سرکاری نرخ",
-  btnPrices:"آج کے نرخ دیکھیں",btnCam:"کیمرے سے پہچانیں",btnReport:"زائد قیمت کی شکایت کریں",tabLand:"ہوم",btnShare:"یہ صفحہ شیئر کریں",freshOk:"✓ آج کا تازہ ریٹ",freshOld:"⚠ نئی فہرست کا انتظار ہے",
+  btnPrices:"آج کے نرخ دیکھیں",btnCam:"کیمرے سے پہچانیں",btnReport:"زائد قیمت کی شکایت کریں",tabLand:"ہوم",btnShare:"یہ صفحہ شیئر کریں",freshOk:"✓ آج کا تازہ ریٹ",freshOld:"⚠ نئی فہرست کا انتظار ہے",whichOne:"ان میں سے کون سا ہے؟ دبا کر قیمت دیکھیں:",orMaybe:"یا شاید:",
   camDeny:"کیمرے کی اجازت نہیں ملی۔ براؤزر کی ترتیبات میں اجازت دیں۔",camHttps:"کیمرہ صرف محفوظ (https) ویب سائٹ پر چلتا ہے۔",
   guess:"ممکنہ شناخت:",noGuess:"معذرت، پہچان نہیں سکا۔ نیچے فہرست سے دیکھیں۔",items:"اقسام",
   thName:"نام",thUnit:"پیمانہ",thWhole:"منڈی بھاؤ",thRetail:"بازار بھاؤ",catVeg:"سبزیاں",catFruit:"پھل",g1:"اول",g2:"دوم",
@@ -328,7 +328,7 @@ const L = {
   retail:"Retail",wholesale:"Wholesale",rs:"Rs",perkg:"per kg",perdozen:"per dozen",perpiece:"per piece",perbundle:"per bundle",
   na:"Not available today",srch:"Search: banana, aloo, آم …",loading:"Loading model…",
   landGov:"Government of Sindh",landIssuer:"Commissioner Karachi Division",landTitle:"Daily Official Prices — Fruits & Vegetables",
-  btnPrices:"View Today's Prices",btnCam:"Identify by Camera",btnReport:"Report Overcharging",tabLand:"Home",btnShare:"Share this page",freshOk:"✓ Updated today",freshOld:"⚠ Awaiting update",
+  btnPrices:"View Today's Prices",btnCam:"Identify by Camera",btnReport:"Report Overcharging",tabLand:"Home",btnShare:"Share this page",freshOk:"✓ Updated today",freshOld:"⚠ Awaiting update",whichOne:"Which one is it? Tap to see its price:",orMaybe:"Or maybe:",
   camDeny:"Camera permission denied. Allow it in browser settings.",camHttps:"Camera only works on a secure (https) website.",
   guess:"Possible match:",noGuess:"Sorry, could not identify. Please use the list below.",items:"varieties",
   thName:"Name",thUnit:"Unit",thWhole:"Wholesale",thRetail:"Retail",catVeg:"Vegetables",catFruit:"Fruits",g1:"G1:",g2:"G2:",
@@ -488,40 +488,103 @@ function toggleLang(){lang=lang==="ur"?"en":"ur";try{localStorage.setItem("lang"
 $("#langBtn").onclick=toggleLang;
 if($("#langBtn2"))$("#langBtn2").onclick=toggleLang;
 
-/* ============ CAMERA — produce-specific AI (MobileCLIP zero-shot) ============ */
-let zsc=null,zscLoading=null,stream=null;
-const ZS_LABELS=[
-["tamatar","tomatoes"],["aloo","potatoes"],["pyaz","onions"],["bandgobhi","green cabbage"],["phoolgobhi","cauliflower"],
-["loki","bottle gourd (long pale green lauki)"],["tori","ridge gourd (turai)"],["baingan","purple eggplant brinjal"],
-["bhindi","okra lady fingers"],["karela","bitter gourd with spiky ridged skin"],["kheera","cucumbers"],["tinda","small round apple gourd (tinda)"],
-["gajar","carrots"],["lehsan","garlic bulbs"],["adrak","ginger root"],["shimla","bell pepper capsicum"],
-["mirch","green chili peppers"],["limu","lemons"],["shalgham","turnips"],["chukandar","beetroot"],
-["haripyaz","spring onions scallions"],["palak","bunch of spinach leaves"],["dhania","bunch of fresh coriander cilantro"],
-["podina","bunch of mint leaves"],["matar","green pea pods"],["mooli","white radish daikon"],
-["kela","bananas"],["papita","papaya"],["saib","apples"],["grapefruit","grapefruit citrus"],
-["kharbooza","muskmelon cantaloupe"],["tarbooz","watermelon"],["aloobukhara","purple plums"],
-["mosambi","sweet lime citrus mosambi"],["chikoo","brown sapodilla chikoo fruit"],["khajoor","dates khajoor"],
-["khubani","apricots"],["aaroo","peaches"],["aam","mangoes"],["falsa","tiny dark purple falsa berries"],
-["jamun","dark purple jamun java plums"],["amrood","green guavas"],["anar","pomegranates"],["angoor","bunch of grapes"]
-];
+/* ============ CAMERA — produce AI: zero-shot ensemble (multi-prompt x multi-view, soft voting) ============ */
+let CAM={TJ:null,tok:null,txt:null,proc:null,vis:null,tEmb:null,gids:[],loading:null};
+let stream=null;
+const ZS_PROMPTS={
+tamatar:["tomatoes","red tomatoes in a pile at a market"],
+aloo:["potatoes","raw brown potatoes in a pile"],
+pyaz:["onions","red onions in a pile"],
+bandgobhi:["green cabbage heads"],
+phoolgobhi:["cauliflower","white cauliflower heads"],
+loki:["bottle gourd","long pale green lauki squash"],
+tori:["ridge gourd turai","dark green ridged gourds"],
+baingan:["purple eggplant brinjal","shiny purple aubergines"],
+bhindi:["okra lady fingers","pile of green okra pods"],
+karela:["bitter gourd","green spiky ridged karela gourds"],
+kheera:["cucumbers","pile of green cucumbers"],
+tinda:["round apple gourd tinda","small round pale green gourds"],
+gajar:["carrots","orange carrots in a pile"],
+lehsan:["garlic bulbs","white garlic heads"],
+adrak:["ginger root","fresh ginger rhizomes"],
+shimla:["bell pepper capsicum","green bell peppers"],
+mirch:["green chili peppers","thin hot green chilies"],
+limu:["lemons","small round green lemons"],
+shalgham:["turnips","white and purple turnips"],
+chukandar:["beetroot","dark red beetroots"],
+haripyaz:["spring onions scallions","bundles of green onions"],
+palak:["bunch of spinach leaves"],
+dhania:["bunch of fresh coriander cilantro"],
+podina:["bunch of mint leaves"],
+matar:["green pea pods","pile of pea pods"],
+mooli:["white radish daikon","long white radishes"],
+kela:["bananas","bunch of yellow bananas"],
+papita:["papaya","whole papaya fruits"],
+saib:["apples","red and golden apples"],
+grapefruit:["grapefruit citrus"],
+kharbooza:["muskmelon cantaloupe","melons with netted skin"],
+tarbooz:["watermelon","whole striped watermelons"],
+aloobukhara:["purple plums"],
+mosambi:["sweet lime mosambi citrus","green sweet limes"],
+chikoo:["brown sapodilla chikoo fruit","round brown chikoo fruits"],
+khajoor:["dates khajoor","pile of brown dates"],
+khubani:["apricots","orange apricots"],
+aaroo:["peaches","fuzzy peaches"],
+aam:["mangoes","pile of yellow and green mangoes"],
+falsa:["tiny dark purple falsa berries"],
+jamun:["dark purple jamun java plums"],
+amrood:["green guavas","round green guava fruits"],
+anar:["pomegranates","red pomegranates"],
+angoor:["bunch of grapes","green grape bunches"]
+};
+const CAM_MODELS=["Xenova/mobileclip_s0","Xenova/clip-vit-base-patch32"];
 function camProgress(html){$("#camResults").innerHTML=`<div class="guess">${html}</div>`}
 async function ensureModel(){
-  if(zsc)return zsc;
-  if(!zscLoading){
-    zscLoading=(async()=>{
+  if(CAM.vis&&CAM.tEmb)return CAM;
+  if(!CAM.loading){
+    CAM.loading=(async()=>{
       const TJ=await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3");
-      TJ.env.allowLocalModels=false;
+      TJ.env.allowLocalModels=false;CAM.TJ=TJ;
       let last=-1;
-      const opts={dtype:"q8",progress_callback:p=>{
-        if(p.status==="progress"&&p.total){const pct=Math.min(99,Math.round(p.loaded/p.total*100));
-          if(pct!==last){last=pct;camProgress(`<span class="spin"></span> ${T().loading} ${pct}%`)}}
-      }};
-      try{return await TJ.pipeline("zero-shot-image-classification","Xenova/mobileclip_s0",opts)}
-      catch(e){return await TJ.pipeline("zero-shot-image-classification","Xenova/clip-vit-base-patch32",opts)}
+      const opts={dtype:"q8",progress_callback:p=>{if(p.status==="progress"&&p.total){const pct=Math.min(99,Math.round(p.loaded/p.total*100));if(pct!==last){last=pct;camProgress(`<span class="spin"></span> ${T().loading} ${pct}%`)}}}};
+      let ok=false,err=null;
+      for(const name of CAM_MODELS){
+        try{
+          CAM.tok=await TJ.AutoTokenizer.from_pretrained(name);
+          CAM.txt=await TJ.CLIPTextModelWithProjection.from_pretrained(name,opts);
+          CAM.proc=await TJ.AutoProcessor.from_pretrained(name);
+          CAM.vis=await TJ.CLIPVisionModelWithProjection.from_pretrained(name,opts);
+          ok=true;break;
+        }catch(e){err=e}
+      }
+      if(!ok)throw err;
+      camProgress(`<span class="spin"></span> ${T().loading}`);
+      const prompts=[],gids=[];
+      for(const g in ZS_PROMPTS)for(const p of ZS_PROMPTS[g]){prompts.push("a photo of "+p);gids.push(g)}
+      const ti=CAM.tok(prompts,{padding:true,truncation:true});
+      const to=await CAM.txt(ti);
+      CAM.tEmb=normRows(to.text_embeds);CAM.gids=gids;
+      return CAM;
     })();
   }
-  zsc=await zscLoading;
-  return zsc;
+  return CAM.loading;
+}
+function normRows(t){
+  const[n,d]=t.dims,a=t.data,out=[];
+  for(let i=0;i<n;i++){let s=0;for(let k=0;k<d;k++)s+=a[i*d+k]*a[i*d+k];s=Math.sqrt(s)||1;
+    const r=new Float32Array(d);for(let k=0;k<d;k++)r[k]=a[i*d+k]/s;out.push(r)}
+  return out;
+}
+async function classifyCanvas(c){
+  const img=await CAM.TJ.RawImage.fromURL(c.toDataURL("image/jpeg",0.92));
+  const pi=await CAM.proc(img);
+  const vo=await CAM.vis(pi);
+  const e=normRows(vo.image_embeds)[0];
+  const sims=CAM.tEmb.map(t=>{let s=0;for(let k=0;k<e.length;k++)s+=e[k]*t[k];return s*100});
+  const mx=Math.max(...sims),exps=sims.map(s=>Math.exp(s-mx)),Z=exps.reduce((a,b)=>a+b,0);
+  const byG={};
+  exps.forEach((v,idx)=>{const g=CAM.gids[idx];byG[g]=(byG[g]||0)+v/Z});
+  return byG;
 }
 function enhance(c){
   const x=c.getContext("2d");
@@ -554,22 +617,32 @@ $("#camShot").onclick=async()=>{
   const res=$("#camResults");
   res.innerHTML=`<div class="guess"><span class="spin"></span> …</div>`;
   try{
-    const m=await ensureModel();
+    await ensureModel();
     const v=$("#camVideo");
-    const s=Math.min(v.videoWidth,v.videoHeight)||448;
-    const c=document.createElement("canvas");c.width=c.height=448;
-    c.getContext("2d").drawImage(v,(v.videoWidth-s)/2,(v.videoHeight-s)/2,s,s,0,0,448,448);
-    enhance(c);
-    const out=await m(c.toDataURL("image/jpeg",0.92),ZS_LABELS.map(z=>z[1]),{hypothesis_template:"a photo of {} at a market stall"});
-    const L2G=new Map(ZS_LABELS.map(z=>[z[1],z[0]]));
-    const all=groupsOfAll();let html="",shown=0;
-    for(const r of out.slice(0,5)){
-      if(r.score<0.07)continue;
-      const gid=L2G.get(r.label);const items=all.get(gid);if(!items)continue;
-      html+=`<div style="margin:12px 0 4px;font-weight:700;line-height:2">${iconHtml(gid)} ${gname(gid)} <span style="font-family:'Inter',sans-serif;font-size:.72rem;color:var(--muted)">${Math.round(r.score*100)}%</span></div>`+items.map(rowHtml).join("");
-      if(++shown>=2)break;
+    const W=v.videoWidth||448,H=v.videoHeight||448,s=Math.min(W,H);
+    const mk=f=>{const c=document.createElement("canvas");c.width=c.height=448;
+      const cs=s*f;c.getContext("2d").drawImage(v,(W-cs)/2,(H-cs)/2,cs,cs,0,0,448,448);enhance(c);return c};
+    const v1=await classifyCanvas(mk(1)),v2=await classifyCanvas(mk(0.62));
+    const keys=new Set([...Object.keys(v1),...Object.keys(v2)]);
+    const comb=[...keys].map(g=>({g,s:((v1[g]||0)+(v2[g]||0))/2})).sort((a,b)=>b.s-a.s);
+    const t1=Object.entries(v1).sort((a,b)=>b[1]-a[1])[0][0];
+    const t2=Object.entries(v2).sort((a,b)=>b[1]-a[1])[0][0];
+    const agree=t1===t2;
+    const all=groupsOfAll();
+    const top=comb.filter(x=>all.has(x.g)).slice(0,3);
+    if(!top.length||top[0].s<0.12){res.innerHTML=`<div class="empty">${T().noGuess}</div>`;return}
+    if(agree&&top[0].s>=0.45){
+      const g=top[0].g;
+      res.innerHTML=`<div style="margin:12px 0 4px;font-weight:700;line-height:2">${iconHtml(g)} ${gname(g)} <span style="font-family:'Inter',sans-serif;font-size:.72rem;color:var(--muted)">${Math.round(top[0].s*100)}%</span></div>`
+        +all.get(g).map(rowHtml).join("")
+        +(top[1]&&top[1].s>0.15?`<div class="guess">${T().orMaybe} ${gname(top[1].g)} (${Math.round(top[1].s*100)}%)</div>`:"");
+    }else{
+      res.innerHTML=`<div class="guess" style="font-weight:700">${T().whichOne}</div>`
+        +`<div style="display:flex;gap:8px;flex-wrap:wrap;padding:6px 0">`
+        +top.map(x=>`<button class="chip" style="display:flex;align-items:center;gap:6px" data-pick="${x.g}">${iconHtml(x.g)} ${gname(x.g)} <b style="font-family:'Inter',sans-serif">${Math.round(x.s*100)}%</b></button>`).join("")
+        +`</div>`;
+      res.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>openSheet(b.dataset.pick,all.get(b.dataset.pick)));
     }
-    res.innerHTML=html||`<div class="empty">${T().noGuess}</div>`;
   }catch(e){res.innerHTML=`<div class="empty">${T().noGuess}</div>`}
 };
 function groupsOfAll(){
