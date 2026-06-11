@@ -7,6 +7,8 @@
 <!-- v3 -->
 
 <meta name="description" content="پھل اور سبزیوں کے آج کے سرکاری نرخ — کمشنر کراچی ڈویژن">
+<meta name="theme-color" content="#0a522c">
+<link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -62,7 +64,7 @@ body.en .row .p{text-align:right}
 
 .sheet-bg{position:fixed;inset:0;background:rgba(20,30,24,.55);z-index:40;display:none}
 .sheet-bg.open{display:block}
-.sheet{position:fixed;left:0;right:0;bottom:0;max-height:82vh;overflow-y:auto;background:var(--cream);border-radius:22px 22px 0 0;z-index:41;padding:8px 16px 28px;transform:translateY(105%);transition:transform .22s ease}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-height:82vh;overflow-y:auto;background:var(--cream);border-radius:26px 26px 0 0;z-index:41;padding:8px 16px 28px;transform:translateY(105%);transition:transform .22s ease}
 .sheet.open{transform:translateY(0)}
 .sheet .grab{width:44px;height:5px;border-radius:3px;background:#c9c5b8;margin:6px auto 10px}
 .sheet h2{font-size:1.15rem;display:flex;align-items:center;gap:10px;line-height:2;margin-bottom:4px}
@@ -114,7 +116,7 @@ body.on-landing header{display:none}
 .crest svg,.crest img{width:100%;height:100%;object-fit:contain}
 .land-gov{font-size:1.05rem;color:var(--green-dark);font-weight:700;line-height:2}
 .land-issuer{font-size:.85rem;color:var(--muted);line-height:2}
-.land-title{font-size:1.3rem;font-weight:800;line-height:2;margin:8px 0 0;color:var(--ink)}
+.land-title{font-size:1.42rem;font-weight:800;line-height:2;margin:8px 0 0;color:var(--ink)}
 .land-date{display:inline-block;background:#fff;border:1.5px dashed var(--accent);border-radius:12px;padding:5px 20px;margin:12px 0 22px;color:var(--green-dark);font-weight:700;font-size:.9rem}
 .land-btns{display:flex;flex-direction:column;gap:12px;max-width:430px;margin:0 auto}
 .land-btn{display:flex;align-items:center;gap:14px;background:var(--green);color:#fff;border-radius:16px;padding:15px 18px;font-size:1rem;font-weight:700;text-decoration:none;border:none;cursor:pointer;font-family:inherit;box-shadow:0 3px 10px rgba(14,107,58,.22);line-height:1.9;text-align:start}
@@ -122,6 +124,15 @@ body.on-landing header{display:none}
 .land-btn.alt{background:#fff;color:var(--green-dark);border:2px solid var(--green);box-shadow:none}
 .land-btn.warn{background:var(--red)}
 .crest.sm{width:42px;height:42px;margin:0;flex-shrink:0;background:#fff;border-radius:50%;padding:3px}
+.fresh{display:none}
+.fresh.ok,.fresh.old{display:inline-block;border-radius:20px;padding:3px 16px;font-size:.78rem;font-weight:700;margin:-14px 0 18px;line-height:2}
+.fresh.ok{background:#e3f2e7;color:#0a522c;border:1px solid #b9dcc3}
+.fresh.old{background:#fdf3dc;color:#7a5c00;border:1px solid #ecd9a0}
+.land-btn.share{background:#fff;color:var(--ink);border:1.5px dashed #b8b4a6;box-shadow:none;font-weight:600}
+.land-btn:active{transform:scale(.98)}
+@media(hover:hover){.tile:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(14,107,58,.14);transition:all .15s}}
+.fulllist tr:nth-child(even) td{background:#fafaf6}
+.sheet-bg.open{backdrop-filter:blur(2px)}
 </style>
 </head>
 <body>
@@ -153,10 +164,12 @@ body.on-landing header{display:none}
     <div class="land-issuer" data-i18n="landIssuer">کمشنر کراچی ڈویژن</div>
     <div class="land-title" data-i18n="landTitle">پھل و سبزیوں کے یومیہ سرکاری نرخ</div>
     <div class="land-date" id="landDate">—</div>
+    <div id="freshBadge" class="fresh"></div>
     <div class="land-btns">
       <button class="land-btn" data-go="home"><span class="bic">🛒</span><span data-i18n="btnPrices">آج کے نرخ دیکھیں</span></button>
       <button class="land-btn alt" data-go="cam"><span class="bic">📷</span><span data-i18n="btnCam">کیمرے سے پہچانیں</span></button>
       <a class="land-btn warn" id="landReport" target="_blank" rel="noopener"><span class="bic">⚠️</span><span data-i18n="btnReport">زائد قیمت کی شکایت کریں</span></a>
+      <button class="land-btn share" id="shareBtn"><span class="bic">📤</span><span data-i18n="btnShare">یہ صفحہ شیئر کریں</span></button>
     </div>
   </section>
 
@@ -316,7 +329,7 @@ const L = {
   retail:"بازار بھاؤ",wholesale:"منڈی بھاؤ",rs:"روپے",perkg:"فی کلو",perdozen:"فی درجن",perpiece:"فی دانہ",perbundle:"فی گڈی",
   na:"آج دستیاب نہیں",srch:"تلاش کریں: کیلا، آلو، aam, tomato…",loading:"ماڈل لوڈ ہو رہا ہے…",
   landGov:"حکومتِ سندھ",landIssuer:"کمشنر کراچی ڈویژن",landTitle:"پھل و سبزیوں کے یومیہ سرکاری نرخ",
-  btnPrices:"آج کے نرخ دیکھیں",btnCam:"کیمرے سے پہچانیں",btnReport:"زائد قیمت کی شکایت کریں",tabLand:"ہوم",
+  btnPrices:"آج کے نرخ دیکھیں",btnCam:"کیمرے سے پہچانیں",btnReport:"زائد قیمت کی شکایت کریں",tabLand:"ہوم",btnShare:"یہ صفحہ شیئر کریں",freshOk:"✓ آج کا تازہ ریٹ",freshOld:"⚠ نئی فہرست کا انتظار ہے",
   camDeny:"کیمرے کی اجازت نہیں ملی۔ براؤزر کی ترتیبات میں اجازت دیں۔",camHttps:"کیمرہ صرف محفوظ (https) ویب سائٹ پر چلتا ہے۔",
   guess:"ممکنہ شناخت:",noGuess:"معذرت، پہچان نہیں سکا۔ نیچے فہرست سے دیکھیں۔",items:"اقسام",
   thName:"نام",thUnit:"پیمانہ",thWhole:"منڈی بھاؤ",thRetail:"بازار بھاؤ",catVeg:"سبزیاں",catFruit:"پھل",g1:"اول",g2:"دوم",
@@ -334,7 +347,7 @@ const L = {
   retail:"Retail",wholesale:"Wholesale",rs:"Rs",perkg:"per kg",perdozen:"per dozen",perpiece:"per piece",perbundle:"per bundle",
   na:"Not available today",srch:"Search: banana, aloo, آم …",loading:"Loading model…",
   landGov:"Government of Sindh",landIssuer:"Commissioner Karachi Division",landTitle:"Daily Official Prices — Fruits & Vegetables",
-  btnPrices:"View Today's Prices",btnCam:"Identify by Camera",btnReport:"Report Overcharging",tabLand:"Home",
+  btnPrices:"View Today's Prices",btnCam:"Identify by Camera",btnReport:"Report Overcharging",tabLand:"Home",btnShare:"Share this page",freshOk:"✓ Updated today",freshOld:"⚠ Awaiting update",
   camDeny:"Camera permission denied. Allow it in browser settings.",camHttps:"Camera only works on a secure (https) website.",
   guess:"Possible match:",noGuess:"Sorry, could not identify. Please use the list below.",items:"varieties",
   thName:"Name",thUnit:"Unit",thWhole:"Wholesale",thRetail:"Retail",catVeg:"Vegetables",catFruit:"Fruits",g1:"G1:",g2:"G2:",
@@ -406,6 +419,9 @@ function renderDate(){
   const enDate=gy?`${DATA.day_en}, ${+gd} ${M[+gm-1]} ${gy}`:DATA.date;
   $("#dateVal").textContent=lang==="ur"?`${DATA.day_ur}، ${DATA.date_ur}`:enDate;
   if($("#landDate"))$("#landDate").textContent=$("#dateVal").textContent;
+  const fb=$("#freshBadge");
+  if(fb){const t=new Date(),iso=t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");
+    const ok=iso===DATA.date;fb.textContent=ok?T().freshOk:T().freshOld;fb.className="fresh "+(ok?"ok":"old");}
 }
 function renderGrid(){
   const g=$("#grid");g.innerHTML="";
@@ -490,6 +506,14 @@ $("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet")closeSheet()})
 function toggleLang(){lang=lang==="ur"?"en":"ur";try{localStorage.setItem("lang",lang)}catch(e){};applyLang()}
 $("#langBtn").onclick=toggleLang;
 if($("#langBtn2"))$("#langBtn2").onclick=toggleLang;
+
+/* share */
+if($("#shareBtn"))$("#shareBtn").onclick=async()=>{
+  const u=location.href.split("#")[0];
+  const msg=(lang==="ur"?"آج کے پھل و سبزیوں کے سرکاری نرخ دیکھیں: ":"Today's official fruit & vegetable prices: ")+u;
+  if(navigator.share){try{await navigator.share({text:msg});return}catch(e){}}
+  window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank");
+};
 
 /* ================= CAMERA (lazy TF.js) ================= */
 let model=null,stream=null;
