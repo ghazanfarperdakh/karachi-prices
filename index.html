@@ -295,30 +295,6 @@ const GROUPS = {
   other_fruit:{ur:"دیگر پھل",en:"Other Fruits",icon:null,al:"gul golarchi other"}
 };
 
-/* MobileNet (ImageNet) label → group ids */
-const CLASS_MAP = [
-  ["banana",["kela"]],
-  ["granny smith",["saib"]],
-  ["orange",["mosambi","grapefruit"]],
-  ["lemon",["limu"]],
-  ["cucumber",["kheera","tori","loki"]],
-  ["zucchini",["tori","loki","kheera"]],
-  ["bell pepper",["shimla","mirch"]],
-  ["broccoli",["phoolgobhi"]],
-  ["cauliflower",["phoolgobhi"]],
-  ["head cabbage",["bandgobhi"]],
-  ["pomegranate",["anar"]],
-  ["butternut squash",["loki","tinda"]],
-  ["acorn squash",["tinda","loki"]],
-  ["spaghetti squash",["loki","kharbooza"]],
-  ["custard apple",["chikoo"]],
-  ["fig",["chikoo","khajoor"]],
-  ["artichoke",["bandgobhi"]],
-  ["cardoon",["phoolgobhi"]],
-  ["strawberry",["falsa"]],
-  ["jackfruit",["kharbooza"]]
-];
-
 /* ================= UI TEXT ================= */
 const L = {
  ur:{title:"آج کے سرکاری نرخ",issuer:"کمشنر کراچی ڈویژن — پرائس لسٹ برائے پھل و سبزیاں",dateLbl:"تاریخِ اجراء",
@@ -326,7 +302,7 @@ const L = {
   fullNote:"مکمل سرکاری فہرست — بازار بھاؤ وہ زیادہ سے زیادہ قیمت ہے جو دکاندار وصول کر سکتا ہے۔",
   camTitle:"کیمرے سے پہچانیں",camIntro:"کیمرہ کھولیں، پھل یا سبزی کی طرف رکھیں، اور «پہچانیں» دبائیں",
   camOpen:"کیمرہ کھولیں",camIdentify:"پہچانیں 📸",
-  camNote:"یہ سہولت آزمائشی ہے اور عام پھل سبزیاں پہچانتی ہے۔ اگر نہ پہچانے تو پہلے صفحے پر تصویر والی فہرست سے دیکھیں۔",
+  camNote:"پھل یا سبزی کو قریب سے اور روشنی میں دکھائیں۔ پہلی بار تقریباً 50MB ماڈل ڈاؤن لوڈ ہوگا — Wi-Fi بہتر ہے (صرف ایک بار)۔ نہ پہچانے تو تصویر والی فہرست استعمال کریں۔",
   ftIssued:"یہ نرخ کمشنر آفس کراچی ڈویژن کی جانب سے جاری کردہ ہیں۔",
   ftMargin:"منڈی بھاؤ = بولی بھاؤ + 6% ، بازار بھاؤ = منڈی بھاؤ + 15%",
   ftComplain:"زائد قیمت کی شکایت واٹس ایپ پر کریں:",ftNote:"نوٹ: پرائس لسٹ عوام الناس کی سہولت کے لیے جاری کی جاتی ہے۔",
@@ -344,7 +320,7 @@ const L = {
   fullNote:"Complete official list — the retail price is the maximum a shopkeeper may charge.",
   camTitle:"Identify by Camera",camIntro:"Open the camera, point at a fruit or vegetable, then tap “Identify”",
   camOpen:"Open Camera",camIdentify:"Identify 📸",
-  camNote:"This is a beta feature and recognizes common items. If it fails, use the picture list on the home tab.",
+  camNote:"Hold the fruit/vegetable close, in light. First use downloads a ~50MB model — Wi-Fi recommended (one time only). If unsure, use the picture list.",
   ftIssued:"These rates are notified by Commissioner Office, Karachi Division.",
   ftMargin:"Wholesale = auction + 6% · Retail = wholesale + 15%",
   ftComplain:"Report overcharging on WhatsApp:",ftNote:"Note: This price list is issued for the convenience of the public.",
@@ -512,16 +488,57 @@ function toggleLang(){lang=lang==="ur"?"en":"ur";try{localStorage.setItem("lang"
 $("#langBtn").onclick=toggleLang;
 if($("#langBtn2"))$("#langBtn2").onclick=toggleLang;
 
-/* ================= CAMERA (lazy TF.js) ================= */
-let model=null,stream=null;
-function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement("script");s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
+/* ============ CAMERA — produce-specific AI (MobileCLIP zero-shot) ============ */
+let zsc=null,zscLoading=null,stream=null;
+const ZS_LABELS=[
+["tamatar","tomatoes"],["aloo","potatoes"],["pyaz","onions"],["bandgobhi","green cabbage"],["phoolgobhi","cauliflower"],
+["loki","bottle gourd (long pale green lauki)"],["tori","ridge gourd (turai)"],["baingan","purple eggplant brinjal"],
+["bhindi","okra lady fingers"],["karela","bitter gourd with spiky ridged skin"],["kheera","cucumbers"],["tinda","small round apple gourd (tinda)"],
+["gajar","carrots"],["lehsan","garlic bulbs"],["adrak","ginger root"],["shimla","bell pepper capsicum"],
+["mirch","green chili peppers"],["limu","lemons"],["shalgham","turnips"],["chukandar","beetroot"],
+["haripyaz","spring onions scallions"],["palak","bunch of spinach leaves"],["dhania","bunch of fresh coriander cilantro"],
+["podina","bunch of mint leaves"],["matar","green pea pods"],["mooli","white radish daikon"],
+["kela","bananas"],["papita","papaya"],["saib","apples"],["grapefruit","grapefruit citrus"],
+["kharbooza","muskmelon cantaloupe"],["tarbooz","watermelon"],["aloobukhara","purple plums"],
+["mosambi","sweet lime citrus mosambi"],["chikoo","brown sapodilla chikoo fruit"],["khajoor","dates khajoor"],
+["khubani","apricots"],["aaroo","peaches"],["aam","mangoes"],["falsa","tiny dark purple falsa berries"],
+["jamun","dark purple jamun java plums"],["amrood","green guavas"],["anar","pomegranates"],["angoor","bunch of grapes"]
+];
+function camProgress(html){$("#camResults").innerHTML=`<div class="guess">${html}</div>`}
 async function ensureModel(){
-  if(model)return model;
-  $("#camMsg").innerHTML=`<span class="spin"></span> ${T().loading}`;
-  await loadScript("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js");
-  await loadScript("https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/dist/mobilenet.min.js");
-  model=await mobilenet.load({version:2,alpha:0.5});
-  return model;
+  if(zsc)return zsc;
+  if(!zscLoading){
+    zscLoading=(async()=>{
+      const TJ=await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3");
+      TJ.env.allowLocalModels=false;
+      let last=-1;
+      const opts={dtype:"q8",progress_callback:p=>{
+        if(p.status==="progress"&&p.total){const pct=Math.min(99,Math.round(p.loaded/p.total*100));
+          if(pct!==last){last=pct;camProgress(`<span class="spin"></span> ${T().loading} ${pct}%`)}}
+      }};
+      try{return await TJ.pipeline("zero-shot-image-classification","Xenova/mobileclip_s0",opts)}
+      catch(e){return await TJ.pipeline("zero-shot-image-classification","Xenova/clip-vit-base-patch32",opts)}
+    })();
+  }
+  zsc=await zscLoading;
+  return zsc;
+}
+function enhance(c){
+  const x=c.getContext("2d");
+  const im=x.getImageData(0,0,c.width,c.height),d=im.data;
+  const hist=new Array(256).fill(0);let n=0;
+  for(let i=0;i<d.length;i+=32){const l=(d[i]*299+d[i+1]*587+d[i+2]*114)/1000|0;hist[l]++;n++}
+  let acc=0,p2=0,p98=255,mean=0;
+  for(let i=0;i<256;i++)mean+=i*hist[i];mean/=n;
+  for(let i=0;i<256;i++){acc+=hist[i];if(acc>=n*0.02){p2=i;break}}
+  acc=0;for(let i=255;i>=0;i--){acc+=hist[i];if(acc>=n*0.02){p98=i;break}}
+  if(p98-p2<10)return;
+  const g=mean<85?0.75:1;
+  if(p2<8&&p98>247&&g===1)return;
+  const lut=new Uint8Array(256);
+  for(let i=0;i<256;i++){let v=(i-p2)*255/(p98-p2);v=Math.max(0,Math.min(255,v));lut[i]=Math.pow(v/255,g)*255|0}
+  for(let i=0;i<d.length;i+=4){d[i]=lut[d[i]];d[i+1]=lut[d[i+1]];d[i+2]=lut[d[i+2]]}
+  x.putImageData(im,0,0);
 }
 $("#camStart").onclick=async()=>{
   const v=$("#camVideo"),msg=$("#camMsg");
@@ -538,26 +555,21 @@ $("#camShot").onclick=async()=>{
   res.innerHTML=`<div class="guess"><span class="spin"></span> …</div>`;
   try{
     const m=await ensureModel();
-    const preds=await m.classify($("#camVideo"),5);
-    const found=new Map(); let guesses=[];
-    for(const p of preds){
-      const lbl=p.className.toLowerCase();
-      guesses.push(`${p.className.split(",")[0]} ${(p.probability*100).toFixed(0)}%`);
-      for(const[key,gids]of CLASS_MAP){
-        if(lbl.includes(key)&&p.probability>0.12){
-          for(const gid of gids)if(!found.has(gid))found.set(gid,p.probability);
-        }
-      }
+    const v=$("#camVideo");
+    const s=Math.min(v.videoWidth,v.videoHeight)||448;
+    const c=document.createElement("canvas");c.width=c.height=448;
+    c.getContext("2d").drawImage(v,(v.videoWidth-s)/2,(v.videoHeight-s)/2,s,s,0,0,448,448);
+    enhance(c);
+    const out=await m(c.toDataURL("image/jpeg",0.92),ZS_LABELS.map(z=>z[1]),{hypothesis_template:"a photo of {} at a market stall"});
+    const L2G=new Map(ZS_LABELS.map(z=>[z[1],z[0]]));
+    const all=groupsOfAll();let html="",shown=0;
+    for(const r of out.slice(0,5)){
+      if(r.score<0.07)continue;
+      const gid=L2G.get(r.label);const items=all.get(gid);if(!items)continue;
+      html+=`<div style="margin:12px 0 4px;font-weight:700;line-height:2">${iconHtml(gid)} ${gname(gid)} <span style="font-family:'Inter',sans-serif;font-size:.72rem;color:var(--muted)">${Math.round(r.score*100)}%</span></div>`+items.map(rowHtml).join("");
+      if(++shown>=2)break;
     }
-    const all=groupsOfAll();
-    let html="";
-    for(const gid of found.keys()){
-      const items=all.get(gid);if(!items)continue;
-      html+=`<div style="margin:10px 0 4px;font-weight:700;line-height:2">${iconHtml(gid)} ${gname(gid)}</div>`+items.map(rowHtml).join("");
-    }
-    res.innerHTML=html
-      ?`<div class="guess">${T().guess} ${guesses[0]}</div>${html}`
-      :`<div class="empty">${T().noGuess}</div>`;
+    res.innerHTML=html||`<div class="empty">${T().noGuess}</div>`;
   }catch(e){res.innerHTML=`<div class="empty">${T().noGuess}</div>`}
 };
 function groupsOfAll(){
