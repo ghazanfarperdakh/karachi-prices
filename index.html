@@ -118,9 +118,8 @@ body.on-landing header{display:none}
 .land-sheet{background:var(--cream);border-radius:26px 26px 0 0;margin:-30px 0 0;padding:26px 14px 6px;position:relative}
 .land-top{display:flex;justify-content:flex-end;padding-top:14px}
 .langbtn2{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.5);color:#fff;border-radius:20px;padding:6px 16px;font-size:.85rem;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600}
-.crest{width:116px;height:116px;margin:2px auto 12px;background:#fff;border-radius:50%;padding:8px;box-shadow:0 4px 16px rgba(0,0,0,.22)}
+.crest{width:124px;height:124px;margin:6px auto 12px}
 .crest svg,.crest img{width:100%;height:100%;object-fit:contain}
-.land-gov{font-size:1.05rem;color:#fff;font-weight:700;line-height:2}
 .land-issuer{font-size:.85rem;color:#cfe3d6;line-height:2}
 .land-title{font-size:1.42rem;font-weight:800;line-height:2;margin:8px 0 0;color:#fff}
 .land-date{display:inline-block;background:rgba(255,255,255,.12);border:1.5px dashed rgba(255,233,168,.6);border-radius:12px;padding:5px 20px;margin:12px 0 0;color:#ffe9a8;font-weight:700;font-size:.9rem}
@@ -129,12 +128,11 @@ body.on-landing header{display:none}
 .land-btn .bic{font-size:1.45rem;flex-shrink:0}
 .land-btn.alt{background:#fff;color:var(--green-dark);border:2px solid var(--green);box-shadow:none}
 .land-btn.warn{background:var(--red)}
-.crest.sm{width:42px;height:42px;margin:0;flex-shrink:0;background:#fff;border-radius:50%;padding:3px}
+.crest.sm{width:42px;height:42px;margin:0;flex-shrink:0}
 .fresh{display:none}
 .fresh.ok,.fresh.old{display:block;width:fit-content;margin:12px auto 0;border-radius:20px;padding:3px 16px;font-size:.78rem;font-weight:700;line-height:2}
 .fresh.ok{background:rgba(223,242,231,.16);color:#d9f2e1;border:1px solid rgba(185,220,195,.45)}
 .fresh.old{background:rgba(253,243,220,.14);color:#ffe9a8;border:1px solid rgba(236,217,160,.5)}
-.land-btn.share{background:#fff;color:var(--ink);border:1.5px dashed #b8b4a6;box-shadow:none;font-weight:600}
 .land-btn:active{transform:scale(.98)}
 @media(hover:hover){.tile:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(14,107,58,.14);transition:all .15s}}
 .fulllist tr:nth-child(even) td{background:#fafaf6}
@@ -167,7 +165,6 @@ body.on-landing header{display:none}
     <div class="land-hero">
       <div class="land-top"><button class="langbtn2" id="langBtn2">English</button></div>
       <div class="crest" id="crestMain"></div>
-      <div class="land-gov" data-i18n="landGov">حکومتِ سندھ</div>
       <div class="land-issuer" data-i18n="landIssuer">کمشنر کراچی ڈویژن</div>
       <div class="land-title" data-i18n="landTitle">پھل و سبزیوں کے یومیہ سرکاری نرخ</div>
       <div class="land-date" id="landDate">—</div>
@@ -178,7 +175,6 @@ body.on-landing header{display:none}
       <button class="land-btn" data-go="home"><span class="bic">🛒</span><span data-i18n="btnPrices">آج کے نرخ دیکھیں</span></button>
       <button class="land-btn alt" data-go="cam"><span class="bic">📷</span><span data-i18n="btnCam">کیمرے سے پہچانیں</span></button>
       <a class="land-btn warn" id="landReport" target="_blank" rel="noopener"><span class="bic">⚠️</span><span data-i18n="btnReport">زائد قیمت کی شکایت کریں</span></a>
-      <button class="land-btn share" id="shareBtn"><span class="bic">📤</span><span data-i18n="btnShare">یہ صفحہ شیئر کریں</span></button>
     </div>
     </div>
   </section>
@@ -227,7 +223,6 @@ body.on-landing header{display:none}
   <div class="wrap">
     <div><b data-i18n="ftIssued">یہ نرخ کمشنر آفس کراچی ڈویژن کی جانب سے جاری کردہ ہیں۔</b></div>
     <div><span data-i18n="ftComplain">زائد قیمت کی شکایت واٹس ایپ پر کریں:</span> <a class="wa-link" id="ftWa" href="#">0316‑0111712</a> — 021‑99203443</div>
-    <div data-i18n="ftNote">نوٹ: پرائس لسٹ عوام الناس کی سہولت کے لیے جاری کی جاتی ہے۔</div>
   </div>
 </footer>
 
@@ -516,14 +511,6 @@ $("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet")closeSheet()})
 function toggleLang(){lang=lang==="ur"?"en":"ur";try{localStorage.setItem("lang",lang)}catch(e){};applyLang()}
 $("#langBtn").onclick=toggleLang;
 if($("#langBtn2"))$("#langBtn2").onclick=toggleLang;
-
-/* share */
-if($("#shareBtn"))$("#shareBtn").onclick=async()=>{
-  const u=location.href.split("#")[0];
-  const msg=(lang==="ur"?"آج کے پھل و سبزیوں کے سرکاری نرخ دیکھیں: ":"Today's official fruit & vegetable prices: ")+u;
-  if(navigator.share){try{await navigator.share({text:msg});return}catch(e){}}
-  window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank");
-};
 
 /* ================= CAMERA (lazy TF.js) ================= */
 let model=null,stream=null;
