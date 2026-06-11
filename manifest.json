@@ -1,1 +1,1 @@
-{"name":"Karachi Daily Official Prices","short_name":"Karachi Prices","start_url":".","display":"standalone","background_color":"#f7f5ef","theme_color":"#0a522c","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}]}
+{"name":"Karachi Daily Official Prices","short_name":"Karachi Prices","start_url":".","display":"standalone","background_color":"#f7f5ef","theme_color":"#0a522c","icons":[{"src":"logo.png","sizes":"320x320","type":"image/png","purpose":"any"},{"src":"icon.svg","sizes":"any","type":"image/svg+xml"}]}
