@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QR بینر — پرنٹ کے لیے</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Inter:wght@600;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#555;font-family:'Noto Nastaliq Urdu',serif}
+
+/* ---- on-screen toolbar (hidden in print) ---- */
+.toolbar{background:#222;color:#fff;padding:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-family:'Inter',sans-serif;font-size:14px}
+.toolbar input{flex:1;min-width:260px;padding:10px;border-radius:8px;border:none;font-size:14px;direction:ltr}
+.toolbar button{padding:10px 22px;border:none;border-radius:8px;background:#0e6b3a;color:#fff;font-weight:700;font-size:14px;cursor:pointer}
+.toolbar .hint{width:100%;font-size:12px;color:#bbb}
+
+/* ---- the banner page: A3 portrait ---- */
+.page{width:297mm;height:420mm;margin:10mm auto;background:#fff;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 4px 30px rgba(0,0,0,.4)}
+.band{background:linear-gradient(135deg,#0a522c,#0e6b3a);color:#fff;text-align:center;padding:14mm 10mm 10mm;border-bottom:5mm solid #c8a432}
+.band .gov{font-size:30px;opacity:.95;line-height:2}
+.band h1{font-size:54px;line-height:2;font-weight:700}
+.band .sub{font-size:26px;color:#ffe9a8;line-height:2}
+.qrwrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8mm;padding:8mm}
+#qrbox{padding:10mm;border:3mm solid #0e6b3a;border-radius:8mm;background:#fff}
+#qrbox img,#qrbox canvas{width:130mm!important;height:130mm!important;image-rendering:pixelated}
+.scanme{font-family:'Inter',sans-serif;font-weight:900;font-size:40px;color:#0a522c;letter-spacing:2px}
+.steps{display:flex;gap:6mm;justify-content:center;width:100%;padding:0 8mm}
+.step{flex:1;max-width:75mm;background:#f2f5ef;border:1px solid #dfe3d8;border-radius:5mm;padding:6mm 4mm;text-align:center}
+.step .n{font-family:'Inter',sans-serif;font-weight:900;font-size:26px;color:#fff;background:#0e6b3a;width:14mm;height:14mm;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:3mm}
+.step .t{font-size:21px;line-height:2}
+.complain{background:#b3372b;color:#fff;text-align:center;padding:7mm 10mm;font-size:26px;line-height:2.1}
+.complain b{font-family:'Inter',sans-serif;font-size:30px;letter-spacing:1px}
+.foot{background:#0a522c;color:#dfe7dc;text-align:center;padding:5mm;font-family:'Inter',sans-serif;font-size:16px}
+
+@media print{
+  body{background:#fff}
+  .toolbar{display:none}
+  .page{margin:0;box-shadow:none}
+  @page{size:A3 portrait;margin:0}
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span>Website URL:</span>
+  <input id="url" value="https://YOUR-USERNAME.github.io/karachi-prices/" spellcheck="false">
+  <button onclick="makeQR()">Update QR</button>
+  <button onclick="window.print()">🖨️ Print / Save PDF</button>
+  <div class="hint">Apni website ka final URL paste karein → "Update QR" → Print karein (A3). Flex/standee ke liye "Save as PDF" kar ke printer ko dein — QR high-resolution hai, bara print bilkul saaf aayega.</div>
+</div>
+
+<div class="page">
+  <div class="band">
+    <div class="gov">حکومتِ سندھ — کمشنر کراچی ڈویژن</div>
+    <h1>پھل اور سبزیوں کے آج کے سرکاری نرخ</h1>
+    <div class="sub">روزانہ کے تازہ سرکاری ریٹ اب آپ کے موبائل پر</div>
+  </div>
+
+  <div class="qrwrap">
+    <div class="scanme">SCAN ME&nbsp;&nbsp;📱</div>
+    <div id="qrbox"></div>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><div class="t">موبائل کا کیمرہ کھولیں</div></div>
+      <div class="step"><span class="n">2</span><div class="t">اس نشان پر رکھیں</div></div>
+      <div class="step"><span class="n">3</span><div class="t">آج کے نرخ دیکھیں</div></div>
+    </div>
+  </div>
+
+  <div class="complain">
+    دکاندار زیادہ قیمت مانگے؟ واٹس ایپ پر شکایت کریں:&nbsp; <b>0316-0111712</b>
+  </div>
+  <div class="foot">Scan for today's official fruit &amp; vegetable prices — Commissioner Office, Karachi Division</div>
+</div>
+
+<script>
+let qr=null;
+function makeQR(){
+  const u=document.getElementById('url').value.trim();
+  document.getElementById('qrbox').innerHTML="";
+  qr=new QRCode(document.getElementById('qrbox'),{
+    text:u, width:1200, height:1200,
+    correctLevel:QRCode.CorrectLevel.H
+  });
+}
+makeQR();
+</script>
+</body>
+</html>

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>آج کے سرکاری نرخ — کمشنر کراچی ڈویژن</title>
+<!-- v3 -->
+
+<meta name="description" content="پھل اور سبزیوں کے آج کے سرکاری نرخ — کمشنر کراچی ڈویژن">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#0e6b3a; --green-dark:#0a522c; --cream:#f7f5ef; --card:#ffffff;
+  --ink:#1c2520; --muted:#5d6b62; --accent:#c8a432; --red:#b3372b; --line:#e3e0d5;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{font-size:17px}
+body{background:var(--cream);color:var(--ink);font-family:'Noto Nastaliq Urdu','Inter',system-ui,sans-serif;padding-bottom:90px}
+body.en{font-family:'Inter','Noto Nastaliq Urdu',system-ui,sans-serif}
+.ur-txt{font-family:'Noto Nastaliq Urdu',serif}
+.en-txt{font-family:'Inter',sans-serif}
+.urb{font-family:'Noto Nastaliq Urdu',serif;font-size:.88em;opacity:.8}
+
+header{background:linear-gradient(135deg,var(--green-dark),var(--green));color:#fff;padding:14px 16px 18px;border-bottom:4px solid var(--accent)}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.hdr-title{font-size:1.05rem;font-weight:700;line-height:2}
+.hdr-sub{font-size:.78rem;opacity:.92;line-height:1.9}
+#langBtn{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.45);color:#fff;border-radius:20px;padding:6px 14px;font-size:.85rem;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;flex-shrink:0}
+.datebar{margin-top:10px;background:rgba(255,255,255,.12);border:1px dashed rgba(255,255,255,.4);border-radius:10px;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;font-size:.85rem}
+.datebar b{color:#ffe9a8}
+
+.wrap{max-width:760px;margin:0 auto;padding:0 12px}
+header .wrap{padding:0}
+
+.searchbox{position:sticky;top:0;z-index:30;background:var(--cream);padding:10px 0 6px}
+.searchbox input{width:100%;padding:13px 16px;border:2px solid var(--green);border-radius:14px;font-size:1rem;font-family:inherit;background:#fff;color:var(--ink);box-shadow:0 2px 8px rgba(14,107,58,.12)}
+.searchbox input:focus{outline:none;border-color:var(--accent)}
+
+.chips{display:flex;gap:8px;padding:8px 0;flex-wrap:wrap}
+.chip{border:1.5px solid var(--green);background:#fff;color:var(--green);border-radius:20px;padding:5px 16px;font-size:.85rem;cursor:pointer;font-family:inherit;line-height:1.8}
+.chip.on{background:var(--green);color:#fff}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(102px,1fr));gap:10px;padding:8px 0 20px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 6px 8px;text-align:center;cursor:pointer;transition:transform .08s;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.tile:active{transform:scale(.95)}
+.tile .ic{font-size:2rem;line-height:1.2;height:44px;display:flex;align-items:center;justify-content:center}
+.tile .ic .txtic{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:#fff;line-height:2.4}
+.tile .nm{font-size:.82rem;font-weight:600;line-height:1.9;margin-top:2px}
+.tile .pr{font-size:.72rem;color:var(--green);font-weight:700;font-family:'Inter',sans-serif}
+
+.rows{display:flex;flex-direction:column;gap:8px;padding:6px 0 20px}
+.row{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.row .l .n{font-size:.95rem;font-weight:600;line-height:1.9}
+.row .l .u{font-size:.72rem;color:var(--muted);line-height:1.8}
+.row .p{text-align:left;flex-shrink:0}
+.row .p .big{font-size:1.45rem;font-weight:800;color:var(--green);font-family:'Inter',sans-serif;line-height:1.1}
+.row .p .sm{font-size:.68rem;color:var(--muted)}
+.row .p .na{font-size:.8rem;color:var(--muted)}
+body.en .row .p{text-align:right}
+
+.sheet-bg{position:fixed;inset:0;background:rgba(20,30,24,.55);z-index:40;display:none}
+.sheet-bg.open{display:block}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-height:82vh;overflow-y:auto;background:var(--cream);border-radius:22px 22px 0 0;z-index:41;padding:8px 16px 28px;transform:translateY(105%);transition:transform .22s ease}
+.sheet.open{transform:translateY(0)}
+.sheet .grab{width:44px;height:5px;border-radius:3px;background:#c9c5b8;margin:6px auto 10px}
+.sheet h2{font-size:1.15rem;display:flex;align-items:center;gap:10px;line-height:2;margin-bottom:4px}
+.sheet .src{font-size:.72rem;color:var(--muted);margin-bottom:10px;line-height:1.9}
+.btn-report{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;background:var(--red);color:#fff;border:none;border-radius:12px;padding:12px;font-size:.95rem;font-family:inherit;cursor:pointer;text-decoration:none;line-height:1.9}
+
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:35;background:#fff;border-top:1px solid var(--line);display:flex;box-shadow:0 -2px 10px rgba(0,0,0,.07)}
+.tabbar button{flex:1;background:none;border:none;padding:9px 4px 10px;font-family:inherit;font-size:.78rem;color:var(--muted);cursor:pointer;line-height:1.7}
+.tabbar button .tic{display:block;font-size:1.3rem;line-height:1.3}
+.tabbar button.on{color:var(--green);font-weight:700}
+
+.view{display:none}
+.view.on{display:block}
+
+.fulllist table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;font-size:.85rem}
+.fulllist th{background:var(--green);color:#fff;padding:8px 10px;font-weight:600;font-size:.78rem;line-height:1.8}
+.fulllist td{padding:7px 10px;border-bottom:1px solid var(--line);line-height:1.9}
+.fulllist td.num{font-family:'Inter',sans-serif;font-weight:700;color:var(--green);white-space:nowrap}
+.fulllist tr.cathead td{background:#eef3ec;font-weight:700;color:var(--green-dark)}
+
+.cam-stage{background:#10140f;border-radius:16px;overflow:hidden;position:relative;min-height:300px;display:flex;align-items:center;justify-content:center;margin-top:10px}
+.cam-stage video{width:100%;max-height:46vh;object-fit:cover;display:block}
+.cam-msg{color:#dfe7dc;text-align:center;padding:30px 20px;font-size:.9rem;line-height:2.1}
+.cam-controls{display:flex;gap:10px;margin-top:12px}
+.btn{flex:1;border:none;border-radius:14px;padding:14px;font-size:1rem;font-family:inherit;cursor:pointer;line-height:1.9}
+.btn.primary{background:var(--green);color:#fff;font-weight:700}
+.btn.ghost{background:#fff;border:1.5px solid var(--green);color:var(--green)}
+.beta{display:inline-block;background:var(--accent);color:#3d3000;font-size:.62rem;border-radius:8px;padding:2px 8px;font-family:'Inter',sans-serif;font-weight:800;vertical-align:middle;margin-inline-start:6px}
+.cam-note{font-size:.78rem;color:var(--muted);line-height:2;margin-top:10px;background:#fff;border:1px dashed var(--line);border-radius:10px;padding:8px 12px}
+#camResults{padding:10px 0}
+.guess{font-size:.8rem;color:var(--muted);padding:4px 2px;line-height:1.9}
+
+footer{margin-top:26px;background:#eef0e8;border-top:1px solid var(--line);padding:18px 16px 24px;font-size:.78rem;color:var(--muted);line-height:2.2}
+footer .wrap{display:flex;flex-direction:column;gap:6px}
+footer b{color:var(--ink)}
+.wa-link{color:var(--green);font-weight:700;text-decoration:none;font-family:'Inter',sans-serif}
+
+.empty{padding:30px 10px;text-align:center;color:var(--muted);font-size:.9rem;line-height:2.2}
+.spin{display:inline-block;width:18px;height:18px;border:3px solid #cfd8cc;border-top-color:var(--green);border-radius:50%;animation:sp .8s linear infinite;vertical-align:middle}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(min-width:600px){.grid{grid-template-columns:repeat(auto-fill,minmax(118px,1fr))}}
+
+/* ---- landing ---- */
+body.on-landing header{display:none}
+.landing{text-align:center;padding:26px 14px 10px;min-height:70vh}
+.land-top{display:flex;justify-content:flex-end;max-width:760px;margin:0 auto}
+.langbtn2{background:#fff;border:1.5px solid var(--green);color:var(--green);border-radius:20px;padding:6px 16px;font-size:.85rem;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600}
+.crest{width:112px;height:112px;margin:6px auto 12px}
+.crest svg,.crest img{width:100%;height:100%;object-fit:contain}
+.land-gov{font-size:1.05rem;color:var(--green-dark);font-weight:700;line-height:2}
+.land-issuer{font-size:.85rem;color:var(--muted);line-height:2}
+.land-title{font-size:1.3rem;font-weight:800;line-height:2;margin:8px 0 0;color:var(--ink)}
+.land-date{display:inline-block;background:#fff;border:1.5px dashed var(--accent);border-radius:12px;padding:5px 20px;margin:12px 0 22px;color:var(--green-dark);font-weight:700;font-size:.9rem}
+.land-btns{display:flex;flex-direction:column;gap:12px;max-width:430px;margin:0 auto}
+.land-btn{display:flex;align-items:center;gap:14px;background:var(--green);color:#fff;border-radius:16px;padding:15px 18px;font-size:1rem;font-weight:700;text-decoration:none;border:none;cursor:pointer;font-family:inherit;box-shadow:0 3px 10px rgba(14,107,58,.22);line-height:1.9;text-align:start}
+.land-btn .bic{font-size:1.45rem;flex-shrink:0}
+.land-btn.alt{background:#fff;color:var(--green-dark);border:2px solid var(--green);box-shadow:none}
+.land-btn.warn{background:var(--red)}
+.crest.sm{width:42px;height:42px;margin:0;flex-shrink:0;background:#fff;border-radius:50%;padding:3px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="hdr-top">
+      <div class="crest sm" id="crestHdr"></div>
+      <div style="flex:1">
+        <div class="hdr-title" data-i18n="title">آج کے سرکاری نرخ</div>
+        <div class="hdr-sub" data-i18n="issuer">کمشنر کراچی ڈویژن — پرائس لسٹ برائے پھل و سبزیاں</div>
+      </div>
+      <button id="langBtn">English</button>
+    </div>
+    <div class="datebar">
+      <span data-i18n="dateLbl">تاریخِ اجراء</span>
+      <b id="dateVal">—</b>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- VIEW 0: landing -->
+  <section id="view-landing" class="view on landing">
+    <div class="land-top"><button class="langbtn2" id="langBtn2">English</button></div>
+    <div class="crest" id="crestMain"></div>
+    <div class="land-gov" data-i18n="landGov">حکومتِ سندھ</div>
+    <div class="land-issuer" data-i18n="landIssuer">کمشنر کراچی ڈویژن</div>
+    <div class="land-title" data-i18n="landTitle">پھل و سبزیوں کے یومیہ سرکاری نرخ</div>
+    <div class="land-date" id="landDate">—</div>
+    <div class="land-btns">
+      <button class="land-btn" data-go="home"><span class="bic">🛒</span><span data-i18n="btnPrices">آج کے نرخ دیکھیں</span></button>
+      <button class="land-btn alt" data-go="cam"><span class="bic">📷</span><span data-i18n="btnCam">کیمرے سے پہچانیں</span></button>
+      <a class="land-btn warn" id="landReport" target="_blank" rel="noopener"><span class="bic">⚠️</span><span data-i18n="btnReport">زائد قیمت کی شکایت کریں</span></a>
+    </div>
+  </section>
+
+  <!-- VIEW 1: search + grid -->
+  <section id="view-home" class="view">
+    <div class="searchbox">
+      <input id="q" type="search" placeholder="تلاش کریں: کیلا، آلو، aam, tomato…" autocomplete="off">
+    </div>
+    <div class="chips" id="chips">
+      <button class="chip on" data-cat="all" data-i18n="all">سب</button>
+      <button class="chip" data-cat="veg" data-i18n="veg">سبزیاں</button>
+      <button class="chip" data-cat="fruit" data-i18n="fruit">پھل</button>
+    </div>
+    <div id="grid" class="grid"></div>
+    <div id="searchRows" class="rows"></div>
+    <div id="emptyMsg" class="empty" style="display:none" data-i18n="noResult">کچھ نہیں ملا — املا بدل کر دیکھیں</div>
+  </section>
+
+  <!-- VIEW 2: full list -->
+  <section id="view-list" class="view fulllist">
+    <div style="padding:14px 0 10px;font-size:.85rem;color:var(--muted);line-height:2" data-i18n="fullNote">مکمل سرکاری فہرست — بازار بھاؤ وہ زیادہ سے زیادہ قیمت ہے جو دکاندار وصول کر سکتا ہے۔</div>
+    <table id="fullTable"></table>
+  </section>
+
+  <!-- VIEW 3: camera -->
+  <section id="view-cam" class="view">
+    <div style="padding-top:14px;font-size:1rem;font-weight:700;line-height:2">
+      <span data-i18n="camTitle">کیمرے سے پہچانیں</span><span class="beta">BETA</span>
+    </div>
+    <div class="cam-stage">
+      <video id="camVideo" autoplay playsinline muted style="display:none"></video>
+      <div class="cam-msg" id="camMsg" data-i18n="camIntro">کیمرہ کھولیں، پھل یا سبزی کی طرف رکھیں، اور «پہچانیں» دبائیں</div>
+    </div>
+    <div class="cam-controls">
+      <button id="camStart" class="btn primary" data-i18n="camOpen">کیمرہ کھولیں</button>
+      <button id="camShot" class="btn ghost" style="display:none" data-i18n="camIdentify">پہچانیں 📸</button>
+    </div>
+    <div id="camResults"></div>
+    <div class="cam-note" data-i18n="camNote">یہ سہولت آزمائشی ہے اور عام پھل سبزیاں پہچانتی ہے۔ اگر نہ پہچانے تو پہلے صفحے پر تصویر والی فہرست سے دیکھیں۔</div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><b data-i18n="ftIssued">یہ نرخ کمشنر آفس کراچی ڈویژن کی جانب سے جاری کردہ ہیں۔</b></div>
+    <div><span data-i18n="ftComplain">زائد قیمت کی شکایت واٹس ایپ پر کریں:</span> <a class="wa-link" id="ftWa" href="#">0316‑0111712</a> — 021‑99203443</div>
+    <div data-i18n="ftNote">نوٹ: پرائس لسٹ عوام الناس کی سہولت کے لیے جاری کی جاتی ہے۔</div>
+  </div>
+</footer>
+
+<!-- bottom sheet -->
+<div class="sheet-bg" id="sheetBg"></div>
+<div class="sheet" id="sheet">
+  <div class="grab"></div>
+  <h2 id="shTitle"></h2>
+  <div class="src" id="shSrc"></div>
+  <div class="rows" id="shRows"></div>
+  <a class="btn-report" id="shReport" target="_blank" rel="noopener">⚠️ <span data-i18n="report">غلط قیمت کی شکایت کریں (WhatsApp)</span></a>
+</div>
+
+<!-- tab bar -->
+<nav class="tabbar">
+  <button class="on" data-view="landing"><span class="tic">🏠</span><span data-i18n="tabLand">ہوم</span></button>
+  <button data-view="home"><span class="tic">🛒</span><span data-i18n="tabHome">نرخ</span></button>
+  <button data-view="list"><span class="tic">📋</span><span data-i18n="tabList">مکمل فہرست</span></button>
+  <button data-view="cam"><span class="tic">📷</span><span data-i18n="tabCam">کیمرہ</span></button>
+</nav>
+
+<script>window.EMBEDDED_DATA={"date":"2026-06-11","day_en":"Thursday","day_ur":"جمعرات","date_ur":"11 جون 2026","issuer_en":"Commissioner Karachi Division","issuer_ur":"کمشنر کراچی ڈویژن","whatsapp":"923160111712","phone":"021-99203443","margins_note_en":"Wholesale = auction price + 6%. Retail = wholesale + 15%.","margins_note_ur":"منڈی بھاؤ = بولی بھاؤ + 6%، بازار بھاؤ = منڈی بھاؤ + 15%","items":[{"id":"f1","cat":"fruit","group":"kela","ur":"کیلا درجہ اول","en":"Banana Grade 1","unit":"dozen","auction":124,"wholesale":131,"retail":151},{"id":"f2","cat":"fruit","group":"kela","ur":"کیلا درجہ دوم","en":"Banana Grade 2","unit":"dozen","auction":null,"wholesale":110,"retail":127},{"id":"f3","cat":"fruit","group":"papita","ur":"پپیتہ درجہ اول","en":"Papaya Grade 1","unit":"kg","auction":112,"wholesale":119,"retail":137},{"id":"f4","cat":"fruit","group":"papita","ur":"پپیتہ درجہ دوم","en":"Papaya Grade 2","unit":"kg","auction":null,"wholesale":100,"retail":115},{"id":"f5","cat":"fruit","group":"saib","ur":"سیب کلو درجہ اول","en":"Apple Kulu Grade 1","unit":"kg","auction":179,"wholesale":190,"retail":219},{"id":"f6","cat":"fruit","group":"saib","ur":"سیب کلو درجہ دوم","en":"Apple Kulu Grade 2","unit":"kg","auction":null,"wholesale":170,"retail":196},{"id":"f7","cat":"fruit","group":"saib","ur":"سیب گولڈن درجہ اول","en":"Apple Golden Grade 1","unit":"kg","auction":229,"wholesale":243,"retail":279},{"id":"f8","cat":"fruit","group":"saib","ur":"سیب گولڈن درجہ دوم","en":"Apple Golden Grade 2","unit":"kg","auction":null,"wholesale":220,"retail":253},{"id":"f9","cat":"fruit","group":"grapefruit","ur":"گریپ فروٹ درجہ اول فی دانہ","en":"Grapefruit Grade 1 (per piece)","unit":"piece","auction":null,"wholesale":30,"retail":35},{"id":"f10","cat":"fruit","group":"grapefruit","ur":"گریپ فروٹ درجہ دوم فی دانہ","en":"Grapefruit Grade 2 (per piece)","unit":"piece","auction":null,"wholesale":25,"retail":29},{"id":"f11","cat":"fruit","group":"kharbooza","ur":"خربوزہ درجہ اول","en":"Muskmelon Grade 1","unit":"kg","auction":100,"wholesale":106,"retail":122},{"id":"f12","cat":"fruit","group":"kharbooza","ur":"خربوزہ درجہ دوم","en":"Muskmelon Grade 2","unit":"kg","auction":null,"wholesale":95,"retail":109},{"id":"f13","cat":"fruit","group":"tarbooz","ur":"تربوز گول","en":"Watermelon (Round)","unit":"kg","auction":57,"wholesale":60,"retail":69},{"id":"f14","cat":"fruit","group":"tarbooz","ur":"تربوز لمبا","en":"Watermelon (Long)","unit":"kg","auction":57,"wholesale":60,"retail":69},{"id":"f15","cat":"fruit","group":"aloobukhara","ur":"آلو بخارہ","en":"Plum (Aloo Bukhara)","unit":"kg","auction":null,"wholesale":250,"retail":288},{"id":"f16","cat":"fruit","group":"mosambi","ur":"موسمی درجہ اول فی درجن","en":"Mosambi Grade 1 (per dozen)","unit":"dozen","auction":null,"wholesale":185,"retail":213},{"id":"f17","cat":"fruit","group":"mosambi","ur":"موسمی درجہ دوم فی درجن","en":"Mosambi Grade 2 (per dozen)","unit":"dozen","auction":null,"wholesale":165,"retail":190},{"id":"f18","cat":"fruit","group":"chikoo","ur":"چیکو درجہ اول","en":"Chikoo Grade 1","unit":"kg","auction":81,"wholesale":86,"retail":99},{"id":"f19","cat":"fruit","group":"chikoo","ur":"چیکو درجہ دوم","en":"Chikoo Grade 2","unit":"kg","auction":null,"wholesale":60,"retail":69},{"id":"f20","cat":"fruit","group":"khajoor","ur":"کھجور ایرانی مضافاتی اول","en":"Dates Irani Grade 1","unit":"kg","auction":null,"wholesale":580,"retail":667},{"id":"f21","cat":"fruit","group":"khajoor","ur":"کھجور ایرانی مضافاتی دوم","en":"Dates Irani Grade 2","unit":"kg","auction":null,"wholesale":500,"retail":575},{"id":"f22","cat":"fruit","group":"khajoor","ur":"کھجور زاہدی بصرہ اول","en":"Dates Zahidi Basra Grade 1","unit":"kg","auction":null,"wholesale":500,"retail":575},{"id":"f23","cat":"fruit","group":"khajoor","ur":"کھجور زاہدی بصرہ دوم","en":"Dates Zahidi Basra Grade 2","unit":"kg","auction":null,"wholesale":450,"retail":518},{"id":"f24","cat":"fruit","group":"kharbooza","ur":"گرما","en":"Garma (Melon)","unit":"kg","auction":null,"wholesale":110,"retail":127},{"id":"f25","cat":"fruit","group":"other_fruit","ur":"گولارچی","en":"Golarchi","unit":"kg","auction":89,"wholesale":94,"retail":108},{"id":"f26","cat":"fruit","group":"khubani","ur":"خوبانی درجہ اول","en":"Apricot Grade 1","unit":"kg","auction":null,"wholesale":175,"retail":201},{"id":"f27","cat":"fruit","group":"khubani","ur":"خوبانی درجہ دوم","en":"Apricot Grade 2","unit":"kg","auction":null,"wholesale":150,"retail":173},{"id":"f28","cat":"fruit","group":"aaroo","ur":"آڑو درجہ اول","en":"Peach Grade 1","unit":"kg","auction":150,"wholesale":159,"retail":183},{"id":"f29","cat":"fruit","group":"aaroo","ur":"آڑو درجہ دوم","en":"Peach Grade 2","unit":"kg","auction":null,"wholesale":130,"retail":150},{"id":"f30","cat":"fruit","group":"aam","ur":"آم دوسہری","en":"Mango Dusehri","unit":"kg","auction":null,"wholesale":155,"retail":178},{"id":"f31","cat":"fruit","group":"aam","ur":"آم سرولی","en":"Mango Sarauli","unit":"kg","auction":null,"wholesale":140,"retail":161},{"id":"f32","cat":"fruit","group":"aam","ur":"آم سندھڑی","en":"Mango Sindhri","unit":"kg","auction":null,"wholesale":150,"retail":173},{"id":"f33","cat":"fruit","group":"aam","ur":"آم لنگڑا","en":"Mango Langra","unit":"kg","auction":null,"wholesale":170,"retail":196},{"id":"f34","cat":"fruit","group":"falsa","ur":"فالسہ","en":"Falsa","unit":"kg","auction":null,"wholesale":125,"retail":144},{"id":"f35","cat":"fruit","group":"jamun","ur":"جامن","en":"Jamun","unit":"kg","auction":null,"wholesale":240,"retail":276},{"id":"f36","cat":"fruit","group":"amrood","ur":"امرود","en":"Guava","unit":"kg","auction":null,"wholesale":120,"retail":138},{"id":"f37","cat":"fruit","group":"anar","ur":"ایرانی انار درجہ اول","en":"Pomegranate Irani Grade 1","unit":"kg","auction":null,"wholesale":350,"retail":403},{"id":"f38","cat":"fruit","group":"anar","ur":"انار قندھاری اول","en":"Pomegranate Qandhari Grade 1","unit":"kg","auction":null,"wholesale":null,"retail":null},{"id":"f39","cat":"fruit","group":"anar","ur":"انار قندھاری دوم","en":"Pomegranate Qandhari Grade 2","unit":"kg","auction":null,"wholesale":null,"retail":null},{"id":"f40","cat":"fruit","group":"aam","ur":"آم انور رٹول","en":"Mango Anwar Ratol","unit":"kg","auction":null,"wholesale":150,"retail":172},{"id":"f41","cat":"fruit","group":"aam","ur":"آم چونسا اول","en":"Mango Chaunsa Grade 1","unit":"kg","auction":null,"wholesale":170,"retail":196},{"id":"f42","cat":"fruit","group":"aam","ur":"آم چونسا (کالا)","en":"Mango Chaunsa (Kala)","unit":"kg","auction":null,"wholesale":null,"retail":null},{"id":"f43","cat":"fruit","group":"angoor","ur":"انگور سندر خانی","en":"Grapes Sundar Khani","unit":"kg","auction":null,"wholesale":null,"retail":null},{"id":"f44","cat":"fruit","group":"angoor","ur":"انگور گول","en":"Grapes (Round)","unit":"kg","auction":null,"wholesale":null,"retail":null},{"id":"f45","cat":"fruit","group":"amrood","ur":"امرود لاڑکانہ","en":"Guava Larkana","unit":"kg","auction":null,"wholesale":null,"retail":null},{"id":"v1","cat":"veg","group":"aloo","ur":"آلو درجہ اول","en":"Potato Grade 1","unit":"kg","auction":28,"wholesale":30,"retail":35},{"id":"v2","cat":"veg","group":"aloo","ur":"آلو درجہ دوم","en":"Potato Grade 2","unit":"kg","auction":19,"wholesale":20,"retail":23},{"id":"v3","cat":"veg","group":"aloo","ur":"لال آلو درجہ اول","en":"Red Potato Grade 1","unit":"kg","auction":23,"wholesale":25,"retail":29},{"id":"v4","cat":"veg","group":"aloo","ur":"لال آلو درجہ دوم","en":"Red Potato Grade 2","unit":"kg","auction":null,"wholesale":null,"retail":null},{"id":"v5","cat":"veg","group":"pyaz","ur":"پیاز بڑی درجہ اول","en":"Onion Large Grade 1","unit":"kg","auction":52,"wholesale":55,"retail":63},{"id":"v6","cat":"veg","group":"pyaz","ur":"پیاز چھوٹی","en":"Onion Small","unit":"kg","auction":38,"wholesale":40,"retail":46},{"id":"v7","cat":"veg","group":"tamatar","ur":"ٹماٹر درجہ اول","en":"Tomato Grade 1","unit":"kg","auction":85,"wholesale":90,"retail":104},{"id":"v8","cat":"veg","group":"tamatar","ur":"ٹماٹر درجہ دوم","en":"Tomato Grade 2","unit":"kg","auction":47,"wholesale":50,"retail":58},{"id":"v9","cat":"veg","group":"bandgobhi","ur":"بند گوبھی درجہ اول","en":"Cabbage Grade 1","unit":"kg","auction":66,"wholesale":70,"retail":81},{"id":"v10","cat":"veg","group":"bandgobhi","ur":"بند گوبھی درجہ دوم","en":"Cabbage Grade 2","unit":"kg","auction":38,"wholesale":40,"retail":46},{"id":"v11","cat":"veg","group":"phoolgobhi","ur":"پھول گوبھی درجہ اول","en":"Cauliflower Grade 1","unit":"kg","auction":197,"wholesale":210,"retail":242},{"id":"v12","cat":"veg","group":"phoolgobhi","ur":"پھول گوبھی درجہ دوم","en":"Cauliflower Grade 2","unit":"kg","auction":132,"wholesale":140,"retail":161},{"id":"v13","cat":"veg","group":"loki","ur":"لوکی گول","en":"Bottle Gourd (Round)","unit":"kg","auction":75,"wholesale":80,"retail":92},{"id":"v14","cat":"veg","group":"loki","ur":"لوکی لمبی","en":"Bottle Gourd (Long)","unit":"kg","auction":66,"wholesale":70,"retail":81},{"id":"v15","cat":"veg","group":"tori","ur":"توری درجہ اول","en":"Ridge Gourd Grade 1","unit":"kg","auction":56,"wholesale":60,"retail":69},{"id":"v16","cat":"veg","group":"tori","ur":"توری درجہ دوم","en":"Ridge Gourd Grade 2","unit":"kg","auction":28,"wholesale":30,"retail":35},{"id":"v17","cat":"veg","group":"baingan","ur":"بینگن گول","en":"Eggplant (Round)","unit":"kg","auction":75,"wholesale":80,"retail":92},{"id":"v18","cat":"veg","group":"baingan","ur":"بینگن لمبا","en":"Eggplant (Long)","unit":"kg","auction":66,"wholesale":70,"retail":81},{"id":"v19","cat":"veg","group":"bhindi","ur":"بھنڈی سلطان آباد درجہ اول","en":"Okra Sultanabad Grade 1","unit":"kg","auction":122,"wholesale":130,"retail":150},{"id":"v20","cat":"veg","group":"bhindi","ur":"بھنڈی درجہ دوم","en":"Okra Grade 2","unit":"kg","auction":75,"wholesale":80,"retail":92},{"id":"v21","cat":"veg","group":"karela","ur":"کریلا درجہ اول","en":"Bitter Gourd Grade 1","unit":"kg","auction":85,"wholesale":90,"retail":104},{"id":"v22","cat":"veg","group":"karela","ur":"کریلا درجہ دوم","en":"Bitter Gourd Grade 2","unit":"kg","auction":47,"wholesale":50,"retail":58},{"id":"v23","cat":"veg","group":"kheera","ur":"کھیرا درجہ اول","en":"Cucumber Grade 1","unit":"kg","auction":103,"wholesale":110,"retail":127},{"id":"v24","cat":"veg","group":"kheera","ur":"کھیرا درجہ دوم","en":"Cucumber Grade 2","unit":"kg","auction":66,"wholesale":70,"retail":81},{"id":"v25","cat":"veg","group":"tinda","ur":"ٹنڈا (دیسی)","en":"Tinda (Desi)","unit":"kg","auction":66,"wholesale":70,"retail":81},{"id":"v26","cat":"veg","group":"tinda","ur":"ٹنڈا (چائنہ)","en":"Tinda (China)","unit":"kg","auction":38,"wholesale":40,"retail":46},{"id":"v27","cat":"veg","group":"gajar","ur":"گاجر","en":"Carrot","unit":"kg","auction":94,"wholesale":100,"retail":115},{"id":"v28","cat":"veg","group":"lehsan","ur":"لہسن ثابت دیسی درجہ اول","en":"Garlic Desi Grade 1","unit":"kg","auction":null,"wholesale":180,"retail":207},{"id":"v29","cat":"veg","group":"lehsan","ur":"لہسن ثابت دیسی درجہ دوم","en":"Garlic Desi Grade 2","unit":"kg","auction":null,"wholesale":150,"retail":173},{"id":"v30","cat":"veg","group":"lehsan","ur":"لہسن چائنہ (پاکستانی)","en":"Garlic China (Pakistani)","unit":"kg","auction":null,"wholesale":200,"retail":230},{"id":"v31","cat":"veg","group":"adrak","ur":"ادرک بغیر ڈالی اول (چائنہ)","en":"Ginger China Grade 1","unit":"kg","auction":null,"wholesale":250,"retail":288},{"id":"v32","cat":"veg","group":"adrak","ur":"ادرک بغیر ڈالی اول (بنکاک)","en":"Ginger Bangkok Grade 1","unit":"kg","auction":null,"wholesale":240,"retail":276},{"id":"v33","cat":"veg","group":"shimla","ur":"شملہ مرچ درجہ اول","en":"Capsicum Grade 1","unit":"kg","auction":169,"wholesale":180,"retail":207},{"id":"v34","cat":"veg","group":"shimla","ur":"شملہ مرچ درجہ دوم","en":"Capsicum Grade 2","unit":"kg","auction":141,"wholesale":150,"retail":173},{"id":"v35","cat":"veg","group":"mirch","ur":"مرچ","en":"Green Chilli","unit":"kg","auction":null,"wholesale":150,"retail":173},{"id":"v36","cat":"veg","group":"mirch","ur":"مرچ شہزادی","en":"Chilli Shehzadi","unit":"kg","auction":null,"wholesale":120,"retail":138},{"id":"v37","cat":"veg","group":"limu","ur":"لیموں درجہ اول","en":"Lemon Grade 1","unit":"kg","auction":null,"wholesale":240,"retail":276},{"id":"v38","cat":"veg","group":"limu","ur":"لیموں درجہ دوم","en":"Lemon Grade 2","unit":"kg","auction":null,"wholesale":130,"retail":150},{"id":"v39","cat":"veg","group":"shalgham","ur":"شلغم پتہ والا","en":"Turnip (with leaves)","unit":"kg","auction":null,"wholesale":70,"retail":81},{"id":"v40","cat":"veg","group":"chukandar","ur":"چقندر بغیر پتہ والا","en":"Beetroot (without leaves)","unit":"kg","auction":75,"wholesale":80,"retail":92},{"id":"v41","cat":"veg","group":"haripyaz","ur":"ہری پیاز","en":"Spring Onion","unit":"kg","auction":85,"wholesale":90,"retail":104},{"id":"v42","cat":"veg","group":"palak","ur":"پالک","en":"Spinach","unit":"kg","auction":null,"wholesale":50,"retail":58},{"id":"v43","cat":"veg","group":"dhania","ur":"گڈی دھنیا","en":"Coriander (bundle)","unit":"bundle","auction":7,"wholesale":8,"retail":9},{"id":"v44","cat":"veg","group":"podina","ur":"گڈی پودینہ","en":"Mint (bundle)","unit":"bundle","auction":5,"wholesale":6,"retail":7},{"id":"v45","cat":"veg","group":"matar","ur":"مٹر کلاسک","en":"Peas Classic","unit":"kg","auction":null,"wholesale":160,"retail":184},{"id":"v46","cat":"veg","group":"matar","ur":"مٹر","en":"Peas","unit":"kg","auction":null,"wholesale":null,"retail":null},{"id":"v47","cat":"veg","group":"limu","ur":"جمیری لیمو","en":"Jameri Lemo (Citrus jambhiri)","unit":"kg","auction":null,"wholesale":null,"retail":null},{"id":"v48","cat":"veg","group":"mooli","ur":"مولی","en":"Radish","unit":"kg","auction":null,"wholesale":null,"retail":null}]};</script>
+<script>
+/* ================= COMMODITY GROUPS ================= */
+const GROUPS = {
+  aloo:{ur:"آلو",en:"Potato",icon:"🥔",al:"aloo alu potato batata"},
+  pyaz:{ur:"پیاز",en:"Onion",icon:"🧅",al:"pyaz piyaz onion"},
+  tamatar:{ur:"ٹماٹر",en:"Tomato",icon:"🍅",al:"tamatar timatar tomato"},
+  bandgobhi:{ur:"بند گوبھی",en:"Cabbage",icon:"🥬",al:"band gobhi gobi cabbage patta"},
+  phoolgobhi:{ur:"پھول گوبھی",en:"Cauliflower",icon:"🥦",al:"phool gobhi gobi cauliflower"},
+  loki:{ur:"لوکی",en:"Bottle Gourd",icon:null,al:"loki lauki ghiya bottle gourd kaddu"},
+  tori:{ur:"توری",en:"Ridge Gourd",icon:null,al:"tori turai ridge gourd"},
+  baingan:{ur:"بینگن",en:"Eggplant",icon:"🍆",al:"baingan bengan brinjal eggplant aubergine"},
+  bhindi:{ur:"بھنڈی",en:"Okra",icon:null,al:"bhindi okra lady finger ladyfinger"},
+  karela:{ur:"کریلا",en:"Bitter Gourd",icon:null,al:"karela bitter gourd"},
+  kheera:{ur:"کھیرا",en:"Cucumber",icon:"🥒",al:"kheera khira cucumber"},
+  tinda:{ur:"ٹنڈا",en:"Tinda",icon:null,al:"tinda apple gourd"},
+  gajar:{ur:"گاجر",en:"Carrot",icon:"🥕",al:"gajar carrot"},
+  lehsan:{ur:"لہسن",en:"Garlic",icon:"🧄",al:"lehsan lahsun garlic"},
+  adrak:{ur:"ادرک",en:"Ginger",icon:"🫚",al:"adrak ginger"},
+  shimla:{ur:"شملہ مرچ",en:"Capsicum",icon:"🫑",al:"shimla mirch capsicum bell pepper"},
+  mirch:{ur:"مرچ",en:"Green Chilli",icon:"🌶️",al:"mirch mirchi hari chilli chili pepper shehzadi"},
+  limu:{ur:"لیموں",en:"Lemon",icon:"🍋",al:"limu lemo nimbu lemon lime jameri jambhiri"},
+  shalgham:{ur:"شلغم",en:"Turnip",icon:null,al:"shalgham turnip"},
+  chukandar:{ur:"چقندر",en:"Beetroot",icon:null,al:"chukandar beetroot beet"},
+  haripyaz:{ur:"ہری پیاز",en:"Spring Onion",icon:null,al:"hari pyaz spring onion green onion"},
+  palak:{ur:"پالک",en:"Spinach",icon:"🍃",al:"palak spinach saag"},
+  dhania:{ur:"دھنیا",en:"Coriander",icon:"🌿",al:"dhania coriander cilantro"},
+  podina:{ur:"پودینہ",en:"Mint",icon:"🌱",al:"podina pudina mint"},
+  matar:{ur:"مٹر",en:"Peas",icon:"🫛",al:"matar peas mutter classic"},
+  mooli:{ur:"مولی",en:"Radish",icon:null,al:"mooli muli radish"},
+  kela:{ur:"کیلا",en:"Banana",icon:"🍌",al:"kela kayla banana"},
+  papita:{ur:"پپیتہ",en:"Papaya",icon:null,al:"papita papaya"},
+  saib:{ur:"سیب",en:"Apple",icon:"🍎",al:"saib seb apple"},
+  grapefruit:{ur:"گریپ فروٹ",en:"Grapefruit",icon:"🍊",al:"grapefruit chakotra"},
+  kharbooza:{ur:"خربوزہ / گرما",en:"Melon",icon:"🍈",al:"kharbooza kharbuza melon muskmelon garma sarda"},
+  tarbooz:{ur:"تربوز",en:"Watermelon",icon:"🍉",al:"tarbooz tarbuz watermelon"},
+  aloobukhara:{ur:"آلو بخارہ",en:"Plum",icon:null,al:"aloo bukhara plum"},
+  mosambi:{ur:"موسمی",en:"Mosambi",icon:"🍊",al:"mosambi musambi sweet lime malta orange"},
+  chikoo:{ur:"چیکو",en:"Chikoo",icon:null,al:"chikoo cheeku sapodilla"},
+  khajoor:{ur:"کھجور",en:"Dates",icon:"🌴",al:"khajoor khajur dates"},
+  khubani:{ur:"خوبانی",en:"Apricot",icon:null,al:"khubani apricot"},
+  aaroo:{ur:"آڑو",en:"Peach",icon:"🍑",al:"aaroo aru peach"},
+  aam:{ur:"آم",en:"Mango",icon:"🥭",al:"aam mango sindhri chaunsa langra sarauli anwar ratol dusehri sehri"},
+  falsa:{ur:"فالسہ",en:"Falsa",icon:"🫐",al:"falsa phalsa"},
+  jamun:{ur:"جامن",en:"Jamun",icon:null,al:"jamun jaman black plum"},
+  amrood:{ur:"امرود",en:"Guava",icon:"🍐",al:"amrood amrud guava"},
+  anar:{ur:"انار",en:"Pomegranate",icon:null,al:"anar pomegranate"},
+  angoor:{ur:"انگور",en:"Grapes",icon:"🍇",al:"angoor angur grapes"},
+  other_fruit:{ur:"دیگر پھل",en:"Other Fruits",icon:null,al:"gul golarchi other"}
+};
+
+/* MobileNet (ImageNet) label → group ids */
+const CLASS_MAP = [
+  ["banana",["kela"]],
+  ["granny smith",["saib"]],
+  ["orange",["mosambi","grapefruit"]],
+  ["lemon",["limu"]],
+  ["cucumber",["kheera","tori","loki"]],
+  ["zucchini",["tori","loki","kheera"]],
+  ["bell pepper",["shimla","mirch"]],
+  ["broccoli",["phoolgobhi"]],
+  ["cauliflower",["phoolgobhi"]],
+  ["head cabbage",["bandgobhi"]],
+  ["pomegranate",["anar"]],
+  ["butternut squash",["loki","tinda"]],
+  ["acorn squash",["tinda","loki"]],
+  ["spaghetti squash",["loki","kharbooza"]],
+  ["custard apple",["chikoo"]],
+  ["fig",["chikoo","khajoor"]],
+  ["artichoke",["bandgobhi"]],
+  ["cardoon",["phoolgobhi"]],
+  ["strawberry",["falsa"]],
+  ["jackfruit",["kharbooza"]]
+];
+
+/* ================= UI TEXT ================= */
+const L = {
+ ur:{title:"آج کے سرکاری نرخ",issuer:"کمشنر کراچی ڈویژن — پرائس لسٹ برائے پھل و سبزیاں",dateLbl:"تاریخِ اجراء",
+  all:"سب",veg:"سبزیاں",fruit:"پھل",noResult:"کچھ نہیں ملا — املا بدل کر دیکھیں",
+  fullNote:"مکمل سرکاری فہرست — بازار بھاؤ وہ زیادہ سے زیادہ قیمت ہے جو دکاندار وصول کر سکتا ہے۔",
+  camTitle:"کیمرے سے پہچانیں",camIntro:"کیمرہ کھولیں، پھل یا سبزی کی طرف رکھیں، اور «پہچانیں» دبائیں",
+  camOpen:"کیمرہ کھولیں",camIdentify:"پہچانیں 📸",
+  camNote:"یہ سہولت آزمائشی ہے اور عام پھل سبزیاں پہچانتی ہے۔ اگر نہ پہچانے تو پہلے صفحے پر تصویر والی فہرست سے دیکھیں۔",
+  ftIssued:"یہ نرخ کمشنر آفس کراچی ڈویژن کی جانب سے جاری کردہ ہیں۔",
+  ftMargin:"منڈی بھاؤ = بولی بھاؤ + 6% ، بازار بھاؤ = منڈی بھاؤ + 15%",
+  ftComplain:"زائد قیمت کی شکایت واٹس ایپ پر کریں:",ftNote:"نوٹ: پرائس لسٹ عوام الناس کی سہولت کے لیے جاری کی جاتی ہے۔",
+  report:"غلط قیمت کی شکایت کریں (WhatsApp)",tabHome:"نرخ",tabList:"مکمل فہرست",tabCam:"کیمرہ",
+  retail:"بازار بھاؤ",wholesale:"منڈی بھاؤ",rs:"روپے",perkg:"فی کلو",perdozen:"فی درجن",perpiece:"فی دانہ",perbundle:"فی گڈی",
+  na:"آج دستیاب نہیں",srch:"تلاش کریں: کیلا، آلو، aam, tomato…",loading:"ماڈل لوڈ ہو رہا ہے…",
+  landGov:"حکومتِ سندھ",landIssuer:"کمشنر کراچی ڈویژن",landTitle:"پھل و سبزیوں کے یومیہ سرکاری نرخ",
+  btnPrices:"آج کے نرخ دیکھیں",btnCam:"کیمرے سے پہچانیں",btnReport:"زائد قیمت کی شکایت کریں",tabLand:"ہوم",
+  camDeny:"کیمرے کی اجازت نہیں ملی۔ براؤزر کی ترتیبات میں اجازت دیں۔",camHttps:"کیمرہ صرف محفوظ (https) ویب سائٹ پر چلتا ہے۔",
+  guess:"ممکنہ شناخت:",noGuess:"معذرت، پہچان نہیں سکا۔ نیچے فہرست سے دیکھیں۔",items:"اقسام",
+  thName:"نام",thUnit:"پیمانہ",thWhole:"منڈی بھاؤ",thRetail:"بازار بھاؤ",catVeg:"سبزیاں",catFruit:"پھل",g1:"اول",g2:"دوم",
+  waMsg:(item,price)=>`السلام علیکم، شکایت درج کرنی ہے۔\nچیز: ${item}\nسرکاری بازار بھاؤ: ${price} روپے\nدکاندار کی قیمت: \nمقام/دکان: `},
+ en:{title:"Today's Official Prices",issuer:"Commissioner Karachi Division — Fruit & Vegetable Price List",dateLbl:"Issue date",
+  all:"All",veg:"Vegetables",fruit:"Fruits",noResult:"Nothing found — try different spelling",
+  fullNote:"Complete official list — the retail price is the maximum a shopkeeper may charge.",
+  camTitle:"Identify by Camera",camIntro:"Open the camera, point at a fruit or vegetable, then tap “Identify”",
+  camOpen:"Open Camera",camIdentify:"Identify 📸",
+  camNote:"This is a beta feature and recognizes common items. If it fails, use the picture list on the home tab.",
+  ftIssued:"These rates are notified by Commissioner Office, Karachi Division.",
+  ftMargin:"Wholesale = auction + 6% · Retail = wholesale + 15%",
+  ftComplain:"Report overcharging on WhatsApp:",ftNote:"Note: This price list is issued for the convenience of the public.",
+  report:"Report wrong price (WhatsApp)",tabHome:"Prices",tabList:"Full List",tabCam:"Camera",
+  retail:"Retail",wholesale:"Wholesale",rs:"Rs",perkg:"per kg",perdozen:"per dozen",perpiece:"per piece",perbundle:"per bundle",
+  na:"Not available today",srch:"Search: banana, aloo, آم …",loading:"Loading model…",
+  landGov:"Government of Sindh",landIssuer:"Commissioner Karachi Division",landTitle:"Daily Official Prices — Fruits & Vegetables",
+  btnPrices:"View Today's Prices",btnCam:"Identify by Camera",btnReport:"Report Overcharging",tabLand:"Home",
+  camDeny:"Camera permission denied. Allow it in browser settings.",camHttps:"Camera only works on a secure (https) website.",
+  guess:"Possible match:",noGuess:"Sorry, could not identify. Please use the list below.",items:"varieties",
+  thName:"Name",thUnit:"Unit",thWhole:"Wholesale",thRetail:"Retail",catVeg:"Vegetables",catFruit:"Fruits",g1:"G1:",g2:"G2:",
+  waMsg:(item,price)=>`Assalam o Alaikum, I want to report overcharging.\nItem: ${item}\nOfficial retail price: Rs ${price}\nShopkeeper's price: \nLocation/shop: `}
+};
+
+let DATA=null, lang="en", cat="all";
+
+/* ================= HELPERS ================= */
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const T=()=>L[lang];
+function unitTxt(u){return {kg:T().perkg,dozen:T().perdozen,piece:T().perpiece,bundle:T().perbundle}[u]||u}
+function gname(g){return lang==="ur"?GROUPS[g].ur:`${GROUPS[g].en} <span class="urb">(${GROUPS[g].ur})</span>`}
+function iname(it){return lang==="ur"?it.ur:`${it.en} <span class="urb">(${it.ur})</span>`}
+function norm(s){return (s||"").toLowerCase().replace(/[إأآا]/g,"ا").replace(/ھ/g,"ہ").replace(/ے/g,"ی").replace(/\s+/g," ").trim()}
+function hue(s){let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))%360;return h}
+function iconHtml(g){
+  const G=GROUPS[g];
+  if(G.icon)return G.icon;
+  const init=G.ur.replace(/\s/g,"").slice(0,2);
+  return `<span class="txtic" style="background:hsl(${hue(g)},45%,42%)">${init}</span>`;
+}
+function groupsOf(){ // group id -> items, respecting category filter
+  const m=new Map();
+  for(const it of DATA.items){
+    if(cat!=="all"&&it.cat!==cat)continue;
+    if(!m.has(it.group))m.set(it.group,[]);
+    m.get(it.group).push(it);
+  }
+  return m;
+}
+function gradeOf(it){
+  if(/grade 1|درجہ اول/i.test(it.en+it.ur))return 1;
+  if(/grade 2|درجہ دوم/i.test(it.en+it.ur))return 2;
+  return 0;
+}
+/* Tile price label — never a range:
+   one priced item (or all same price) -> "Rs X"
+   exactly a Grade1/Grade2 pair       -> "G1 Rs X · G2 Rs Y" on two lines
+   several varieties                  -> "N varieties — tap" */
+function priceLabel(items){
+  const priced=items.filter(i=>i.retail!=null);
+  if(!priced.length)return "—";
+  const vals=[...new Set(priced.map(i=>i.retail))];
+  if(priced.length===1||vals.length===1)return `Rs ${vals[0]}`;
+  if(priced.length===2){
+    const g1=priced.find(i=>gradeOf(i)===1),g2=priced.find(i=>gradeOf(i)===2);
+    if(g1&&g2)return `${T().g1} Rs ${g1.retail}<br>${T().g2} Rs ${g2.retail}`;
+  }
+  return `${priced.length} ${T().items} ▾`;
+}
+
+/* ================= RENDER ================= */
+function applyLang(){
+  document.documentElement.lang=lang;
+  document.documentElement.dir=lang==="ur"?"rtl":"ltr";
+  document.body.classList.toggle("en",lang==="en");
+  const lb=lang==="ur"?"English":"اردو";
+  $("#langBtn").textContent=lb;
+  if($("#langBtn2"))$("#langBtn2").textContent=lb;
+  $$("[data-i18n]").forEach(el=>{const k=el.dataset.i18n;if(T()[k])el.textContent=T()[k]});
+  $("#q").placeholder=T().srch;
+  renderDate();renderGrid();renderFull();doSearch();
+}
+function renderDate(){
+  if(!DATA)return;
+  const M=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const[gy,gm,gd]=(DATA.date||"").split("-");
+  const enDate=gy?`${DATA.day_en}, ${+gd} ${M[+gm-1]} ${gy}`:DATA.date;
+  $("#dateVal").textContent=lang==="ur"?`${DATA.day_ur}، ${DATA.date_ur}`:enDate;
+  if($("#landDate"))$("#landDate").textContent=$("#dateVal").textContent;
+}
+function renderGrid(){
+  const g=$("#grid");g.innerHTML="";
+  for(const[gid,items]of groupsOf()){
+    const d=document.createElement("div");
+    d.className="tile";d.dataset.g=gid;
+    d.innerHTML=`<div class="ic">${iconHtml(gid)}</div><div class="nm">${gname(gid)}</div><div class="pr">${priceLabel(items)}</div>`;
+    d.onclick=()=>openSheet(gid,items);
+    g.appendChild(d);
+  }
+}
+function rowHtml(it){
+  const p=it.retail!=null
+    ?`<div class="big">Rs ${it.retail}</div>`
+    :`<div class="na">${T().na}</div>`;
+  return `<div class="row"><div class="l"><div class="n">${iname(it)}</div><div class="u">${unitTxt(it.unit)}</div></div><div class="p">${p}</div></div>`;
+}
+function openSheet(gid,items){
+  $("#shTitle").innerHTML=`${GROUPS[gid].icon??""} ${gname(gid)} <span style="font-size:.7rem;color:var(--muted)">(${items.length} ${T().items})</span>`;
+  $("#shSrc").textContent=`${T().issuer} — ${lang==="ur"?DATA.date_ur:DATA.date}`;
+  $("#shRows").innerHTML=items.map(rowHtml).join("");
+  const first=items.find(i=>i.retail!=null);
+  const msg=T().waMsg(lang==="ur"?GROUPS[gid].ur:GROUPS[gid].en, first?first.retail:"—");
+  $("#shReport").href=`https://wa.me/${DATA.whatsapp}?text=${encodeURIComponent(msg)}`;
+  $("#sheetBg").classList.add("open");$("#sheet").classList.add("open");
+}
+function closeSheet(){$("#sheetBg").classList.remove("open");$("#sheet").classList.remove("open")}
+function renderFull(){
+  if(!DATA)return;
+  const t=$("#fullTable");
+  let h=`<tr><th style="width:8%">#</th><th>${T().thName}</th><th>${T().thUnit}</th><th>${T().thRetail}</th></tr>`;
+  let n=0,lastCat="";
+  for(const it of DATA.items){
+    if(it.cat!==lastCat){lastCat=it.cat;n=0;
+      h+=`<tr class="cathead"><td colspan="4">${it.cat==="veg"?T().catVeg:T().catFruit}</td></tr>`}
+    n++;
+    h+=`<tr><td>${n}</td><td>${iname(it)}</td><td style="font-size:.75rem;color:var(--muted)">${unitTxt(it.unit)}</td><td class="num">${it.retail!=null?"Rs "+it.retail:"—"}</td></tr>`;
+  }
+  t.innerHTML=h;
+}
+function doSearch(){
+  const q=norm($("#q").value);
+  const rowsEl=$("#searchRows"),gridEl=$("#grid"),emp=$("#emptyMsg");
+  if(!q){rowsEl.innerHTML="";gridEl.style.display="";emp.style.display="none";return}
+  gridEl.style.display="none";
+  const hits=DATA.items.filter(it=>{
+    if(cat!=="all"&&it.cat!==cat)return false;
+    const G=GROUPS[it.group];
+    return norm(it.ur).includes(q)||norm(it.en).includes(q)||norm(G.ur).includes(q)||norm(G.en).includes(q)||norm(G.al).includes(q);
+  });
+  rowsEl.innerHTML=hits.map(rowHtml).join("");
+  emp.style.display=hits.length?"none":"block";
+}
+
+/* ================= NAV / EVENTS ================= */
+function goView(v){
+  $$(".tabbar button").forEach(x=>x.classList.toggle("on",x.dataset.view===v));
+  $$(".view").forEach(x=>x.classList.remove("on"));
+  $("#view-"+v).classList.add("on");
+  document.body.classList.toggle("on-landing",v==="landing");
+  window.scrollTo({top:0});
+}
+$$(".tabbar button").forEach(b=>b.onclick=()=>goView(b.dataset.view));
+$$("[data-go]").forEach(b=>b.onclick=()=>goView(b.dataset.go));
+
+/* Govt crest: uses logo.png if you place one next to index.html, else built-in emblem */
+const CREST=`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="#0a522c"/><circle cx="50" cy="50" r="43.5" fill="none" stroke="#c8a432" stroke-width="2.5"/><circle cx="48" cy="46" r="16" fill="#fff"/><circle cx="52.5" cy="42.5" r="13.5" fill="#0a522c"/><polygon points="63,36 64.9,41 70.2,41.1 66,44.3 67.5,49.4 63,46.4 58.5,49.4 60,44.3 55.8,41.1 61.1,41" fill="#fff"/><path d="M25 78 Q16 58 25 36" stroke="#c8a432" stroke-width="2.4" fill="none"/><path d="M75 78 Q84 58 75 36" stroke="#c8a432" stroke-width="2.4" fill="none"/><path d="M30 82 Q50 92 70 82" stroke="#c8a432" stroke-width="2.4" fill="none"/></svg>`;
+function setCrests(){
+  for(const id of["crestMain","crestHdr"]){
+    const el=document.getElementById(id);if(!el)continue;
+    el.innerHTML=`<img src="logo.png" alt="Government of Sindh" style="display:none" onload="this.style.display='block';this.nextElementSibling&&this.nextElementSibling.remove()" onerror="this.remove()">`+CREST;
+  }
+}
+$("#chips").addEventListener("click",e=>{
+  const c=e.target.closest(".chip");if(!c)return;
+  $$(".chip").forEach(x=>x.classList.remove("on"));c.classList.add("on");
+  cat=c.dataset.cat;renderGrid();doSearch();
+});
+$("#q").addEventListener("input",doSearch);
+$("#sheetBg").onclick=closeSheet;
+$("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet")closeSheet()});
+function toggleLang(){lang=lang==="ur"?"en":"ur";try{localStorage.setItem("lang",lang)}catch(e){};applyLang()}
+$("#langBtn").onclick=toggleLang;
+if($("#langBtn2"))$("#langBtn2").onclick=toggleLang;
+
+/* ================= CAMERA (lazy TF.js) ================= */
+let model=null,stream=null;
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement("script");s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
+async function ensureModel(){
+  if(model)return model;
+  $("#camMsg").innerHTML=`<span class="spin"></span> ${T().loading}`;
+  await loadScript("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js");
+  await loadScript("https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/dist/mobilenet.min.js");
+  model=await mobilenet.load({version:2,alpha:0.5});
+  return model;
+}
+$("#camStart").onclick=async()=>{
+  const v=$("#camVideo"),msg=$("#camMsg");
+  if(!window.isSecureContext){msg.textContent=T().camHttps;return}
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"},audio:false});
+    v.srcObject=stream;v.style.display="block";msg.style.display="none";
+    $("#camShot").style.display="block";$("#camStart").style.display="none";
+    ensureModel().catch(()=>{});
+  }catch(e){msg.textContent=T().camDeny}
+};
+$("#camShot").onclick=async()=>{
+  const res=$("#camResults");
+  res.innerHTML=`<div class="guess"><span class="spin"></span> …</div>`;
+  try{
+    const m=await ensureModel();
+    const preds=await m.classify($("#camVideo"),5);
+    const found=new Map(); let guesses=[];
+    for(const p of preds){
+      const lbl=p.className.toLowerCase();
+      guesses.push(`${p.className.split(",")[0]} ${(p.probability*100).toFixed(0)}%`);
+      for(const[key,gids]of CLASS_MAP){
+        if(lbl.includes(key)&&p.probability>0.12){
+          for(const gid of gids)if(!found.has(gid))found.set(gid,p.probability);
+        }
+      }
+    }
+    const all=groupsOfAll();
+    let html="";
+    for(const gid of found.keys()){
+      const items=all.get(gid);if(!items)continue;
+      html+=`<div style="margin:10px 0 4px;font-weight:700;line-height:2">${iconHtml(gid)} ${gname(gid)}</div>`+items.map(rowHtml).join("");
+    }
+    res.innerHTML=html
+      ?`<div class="guess">${T().guess} ${guesses[0]}</div>${html}`
+      :`<div class="empty">${T().noGuess}</div>`;
+  }catch(e){res.innerHTML=`<div class="empty">${T().noGuess}</div>`}
+};
+function groupsOfAll(){
+  const m=new Map();
+  for(const it of DATA.items){if(!m.has(it.group))m.set(it.group,[]);m.get(it.group).push(it)}
+  return m;
+}
+
+/* ================= BOOT ================= */
+const FALLBACK={date:"2026-06-11",day_en:"Thursday",day_ur:"جمعرات",date_ur:"11 جون 2026",whatsapp:"923160111712",items:[]};
+async function boot(){
+  try{const r=await fetch("prices.json?v="+Date.now());DATA=await r.json()}
+  catch(e){DATA=window.EMBEDDED_DATA||FALLBACK}
+  try{const sv=localStorage.getItem("lang");if(sv)lang=sv}catch(e){}
+  $("#ftWa").href=`https://wa.me/${DATA.whatsapp}`;
+  if($("#landReport"))$("#landReport").href=`https://wa.me/${DATA.whatsapp}?text=${encodeURIComponent(T().waMsg("",""))}`;
+  document.body.classList.add("on-landing");
+  setCrests();
+  applyLang();
+}
+boot();
+</script>
+</body>
+</html>
