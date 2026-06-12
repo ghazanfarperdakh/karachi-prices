@@ -26,8 +26,12 @@ VEGETABLES, issued by Commissioner Karachi Division. Then:
    If the owner sent PHOTOS (jpg/png) instead of PDFs, convert them — one PDF per category,
    pages in order (e.g. Python: `img2pdf` or Pillow `save(..., format="PDF", append_images=...)`).
    Keep the output small (re-encode huge photos to ≲1MB/page); citizens download these on mobile data.
-4. **Commit and push to `main` only.** Then give the owner a short plain-language summary:
-   how many prices changed, anything new/missing, and anything you flagged.
+4. **Get the changes onto `main`** (that's what the live site deploys from). In a local/laptop
+   session: commit and push to `main` directly. In a CLOUD session (claude.ai/code), you can
+   only push a side branch — push it, then tell the owner clearly: "tap **Create PR**, then
+   **Merge** — the site goes live about a minute after the merge."
+5. Give the owner a short plain-language summary: how many prices changed, anything
+   new/missing, and anything you flagged.
 
 ## Do not touch (unless explicitly asked)
 - `lib/` and `models/` — the camera AI. It is a self-hosted fp16 MobileCLIP; 8-bit/quantized
