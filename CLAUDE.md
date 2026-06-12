@@ -23,6 +23,9 @@ VEGETABLES, issued by Commissioner Karachi Division. Then:
      set its prices to `null` (do NOT delete it).
 3. **Save the two uploaded files as `docs/fruits.pdf` and `docs/vegetables.pdf`** (overwrite —
    the site links to these exact stable names; citizens download them).
+   If the owner sent PHOTOS (jpg/png) instead of PDFs, convert them — one PDF per category,
+   pages in order (e.g. Python: `img2pdf` or Pillow `save(..., format="PDF", append_images=...)`).
+   Keep the output small (re-encode huge photos to ≲1MB/page); citizens download these on mobile data.
 4. **Commit and push to `main` only.** Then give the owner a short plain-language summary:
    how many prices changed, anything new/missing, and anything you flagged.
 
