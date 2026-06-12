@@ -302,7 +302,7 @@ const L = {
   fullNote:"مکمل سرکاری فہرست — بازار بھاؤ وہ زیادہ سے زیادہ قیمت ہے جو دکاندار وصول کر سکتا ہے۔",
   camTitle:"کیمرے سے پہچانیں",camIntro:"کیمرہ کھولیں، پھل یا سبزی کی طرف رکھیں، اور «پہچانیں» دبائیں",
   camOpen:"کیمرہ کھولیں",camIdentify:"پہچانیں 📸",
-  camNote:"پھل یا سبزی کو قریب سے اور روشنی میں دکھائیں۔ پہلی بار تقریباً 50MB ماڈل ڈاؤن لوڈ ہوگا — Wi-Fi بہتر ہے (صرف ایک بار)۔ نہ پہچانے تو تصویر والی فہرست استعمال کریں۔",
+  camNote:"پھل یا سبزی کو قریب سے اور روشنی میں دکھائیں۔ پہلی بار تقریباً 35MB ڈاؤن لوڈ ہوگا — Wi-Fi بہتر ہے (صرف ایک بار)۔ نہ پہچانے تو تصویر والی فہرست استعمال کریں۔",
   ftIssued:"یہ نرخ کمشنر آفس کراچی ڈویژن کی جانب سے جاری کردہ ہیں۔",
   ftMargin:"منڈی بھاؤ = بولی بھاؤ + 6% ، بازار بھاؤ = منڈی بھاؤ + 15%",
   ftComplain:"زائد قیمت کی شکایت واٹس ایپ پر کریں:",ftNote:"نوٹ: پرائس لسٹ عوام الناس کی سہولت کے لیے جاری کی جاتی ہے۔",
@@ -320,7 +320,7 @@ const L = {
   fullNote:"Complete official list — the retail price is the maximum a shopkeeper may charge.",
   camTitle:"Identify by Camera",camIntro:"Open the camera, point at a fruit or vegetable, then tap “Identify”",
   camOpen:"Open Camera",camIdentify:"Identify 📸",
-  camNote:"Hold the fruit/vegetable close, in light. First use downloads a ~50MB model — Wi-Fi recommended (one time only). If unsure, use the picture list.",
+  camNote:"Hold the fruit/vegetable close, in light. First use downloads ~35MB — Wi-Fi recommended (one time only). If unsure, use the picture list.",
   ftIssued:"These rates are notified by Commissioner Office, Karachi Division.",
   ftMargin:"Wholesale = auction + 6% · Retail = wholesale + 15%",
   ftComplain:"Report overcharging on WhatsApp:",ftNote:"Note: This price list is issued for the convenience of the public.",
@@ -468,12 +468,11 @@ function goView(v){
 $$(".tabbar button").forEach(b=>b.onclick=()=>goView(b.dataset.view));
 $$("[data-go]").forEach(b=>b.onclick=()=>goView(b.dataset.go));
 
-/* Govt crest: uses logo.png if you place one next to index.html, else built-in emblem */
-const CREST=`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="#0a522c"/><circle cx="50" cy="50" r="43.5" fill="none" stroke="#c8a432" stroke-width="2.5"/><circle cx="48" cy="46" r="16" fill="#fff"/><circle cx="52.5" cy="42.5" r="13.5" fill="#0a522c"/><polygon points="63,36 64.9,41 70.2,41.1 66,44.3 67.5,49.4 63,46.4 58.5,49.4 60,44.3 55.8,41.1 61.1,41" fill="#fff"/><path d="M25 78 Q16 58 25 36" stroke="#c8a432" stroke-width="2.4" fill="none"/><path d="M75 78 Q84 58 75 36" stroke="#c8a432" stroke-width="2.4" fill="none"/><path d="M30 82 Q50 92 70 82" stroke="#c8a432" stroke-width="2.4" fill="none"/></svg>`;
+/* Govt crest: logo.png only (must be uploaded with the site) — no built-in placeholder */
 function setCrests(){
   for(const id of["crestMain","crestHdr"]){
     const el=document.getElementById(id);if(!el)continue;
-    el.innerHTML=`<img src="logo.png" alt="Government of Sindh" style="display:none" onload="this.style.display='block';this.nextElementSibling&&this.nextElementSibling.remove()" onerror="this.remove()">`+CREST;
+    el.innerHTML=`<img src="logo.png" alt="Government of Sindh" onerror="this.remove()">`;
   }
 }
 $("#chips").addEventListener("click",e=>{
@@ -488,84 +487,43 @@ function toggleLang(){lang=lang==="ur"?"en":"ur";try{localStorage.setItem("lang"
 $("#langBtn").onclick=toggleLang;
 if($("#langBtn2"))$("#langBtn2").onclick=toggleLang;
 
-/* ============ CAMERA — produce AI: zero-shot ensemble (multi-prompt x multi-view, soft voting) ============ */
-let CAM={TJ:null,tok:null,txt:null,proc:null,vis:null,tEmb:null,gids:[],loading:null};
+/* ============ CAMERA — produce AI: zero-shot ensemble (multi-prompt x multi-view, soft voting) ============
+   Vision-only MobileCLIP, self-hosted in lib/ + models/ (no third-party CDN).
+   Text-prompt embeddings are pre-computed by model-build/make_embeds.mjs into
+   models/text_embeds.json — edit prompts THERE, re-run it, upload the new json. */
+let CAM={ort:null,sess:null,tEmb:null,gids:[],loading:null};
 let stream=null;
-const ZS_PROMPTS={
-tamatar:["tomatoes","red tomatoes in a pile at a market"],
-aloo:["potatoes","raw brown potatoes in a pile"],
-pyaz:["onions","red onions in a pile"],
-bandgobhi:["green cabbage heads"],
-phoolgobhi:["cauliflower","white cauliflower heads"],
-loki:["bottle gourd","long pale green lauki squash"],
-tori:["ridge gourd turai","dark green ridged gourds"],
-baingan:["purple eggplant brinjal","shiny purple aubergines"],
-bhindi:["okra lady fingers","pile of green okra pods"],
-karela:["bitter gourd","green spiky ridged karela gourds"],
-kheera:["cucumbers","pile of green cucumbers"],
-tinda:["round apple gourd tinda","small round pale green gourds"],
-gajar:["carrots","orange carrots in a pile"],
-lehsan:["garlic bulbs","white garlic heads"],
-adrak:["ginger root","fresh ginger rhizomes"],
-shimla:["bell pepper capsicum","green bell peppers"],
-mirch:["green chili peppers","thin hot green chilies"],
-limu:["lemons","small round green lemons"],
-shalgham:["turnips","white and purple turnips"],
-chukandar:["beetroot","dark red beetroots"],
-haripyaz:["spring onions scallions","bundles of green onions"],
-palak:["bunch of spinach leaves"],
-dhania:["bunch of fresh coriander cilantro"],
-podina:["bunch of mint leaves"],
-matar:["green pea pods","pile of pea pods"],
-mooli:["white radish daikon","long white radishes"],
-kela:["bananas","bunch of yellow bananas"],
-papita:["papaya","whole papaya fruits"],
-saib:["apples","red and golden apples"],
-grapefruit:["grapefruit citrus"],
-kharbooza:["muskmelon cantaloupe","melons with netted skin"],
-tarbooz:["watermelon","whole striped watermelons"],
-aloobukhara:["purple plums"],
-mosambi:["sweet lime mosambi citrus","green sweet limes"],
-chikoo:["brown sapodilla chikoo fruit","round brown chikoo fruits"],
-khajoor:["dates khajoor","pile of brown dates"],
-khubani:["apricots","orange apricots"],
-aaroo:["peaches","fuzzy peaches"],
-aam:["mangoes","pile of yellow and green mangoes"],
-falsa:["tiny dark purple falsa berries"],
-jamun:["dark purple jamun java plums"],
-amrood:["green guavas","round green guava fruits"],
-anar:["pomegranates","red pomegranates"],
-angoor:["bunch of grapes","green grape bunches"]
-};
-const CAM_MODELS=["Xenova/mobileclip_s0","Xenova/clip-vit-base-patch32"];
-function camProgress(html){$("#camResults").innerHTML=`<div class="guess">${html}</div>`}
+const CAM_TOTAL=35820000; // ~bytes of engine+model, only for the progress %
+function camProgress(html){$("#camResults").innerHTML=html?`<div class="guess">${html}</div>`:""}
+async function dlBytes(url,onChunk){
+  const r=await fetch(url);
+  if(!r.ok)throw new Error("HTTP "+r.status+" "+url);
+  if(!r.body)return new Uint8Array(await r.arrayBuffer());
+  const chunks=[],reader=r.body.getReader();
+  for(;;){const{done,value}=await reader.read();if(done)break;chunks.push(value);if(onChunk)onChunk(value.length)}
+  let len=0;for(const c of chunks)len+=c.length;
+  const out=new Uint8Array(len);let o=0;for(const c of chunks){out.set(c,o);o+=c.length}
+  return out;
+}
 async function ensureModel(){
-  if(CAM.vis&&CAM.tEmb)return CAM;
+  if(CAM.sess&&CAM.tEmb)return CAM;
   if(!CAM.loading){
     CAM.loading=(async()=>{
-      const TJ=await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3");
-      TJ.env.allowLocalModels=false;CAM.TJ=TJ;
-      let last=-1;
-      const opts={dtype:"q8",progress_callback:p=>{if(p.status==="progress"&&p.total){const pct=Math.min(99,Math.round(p.loaded/p.total*100));if(pct!==last){last=pct;camProgress(`<span class="spin"></span> ${T().loading} ${pct}%`)}}}};
-      let ok=false,err=null;
-      for(const name of CAM_MODELS){
-        try{
-          CAM.tok=await TJ.AutoTokenizer.from_pretrained(name);
-          CAM.txt=await TJ.CLIPTextModelWithProjection.from_pretrained(name,opts);
-          CAM.proc=await TJ.AutoProcessor.from_pretrained(name);
-          CAM.vis=await TJ.CLIPVisionModelWithProjection.from_pretrained(name,opts);
-          ok=true;break;
-        }catch(e){err=e}
-      }
-      if(!ok)throw err;
-      camProgress(`<span class="spin"></span> ${T().loading}`);
-      const prompts=[],gids=[];
-      for(const g in ZS_PROMPTS)for(const p of ZS_PROMPTS[g]){prompts.push("a photo of "+p);gids.push(g)}
-      const ti=CAM.tok(prompts,{padding:true,truncation:true});
-      const to=await CAM.txt(ti);
-      CAM.tEmb=normRows(to.text_embeds);CAM.gids=gids;
+      const ort=await import("./lib/ort.wasm.bundle.min.mjs");
+      const emb=await(await fetch("models/text_embeds.json")).json();
+      CAM.gids=emb.gids;CAM.tEmb=emb.embeds.map(r=>Float32Array.from(r));
+      let got=0,last=-1;
+      const tick=n=>{got+=n;const pct=Math.min(99,Math.round(got/CAM_TOTAL*100));
+        if(pct!==last){last=pct;camProgress(`<span class="spin"></span> ${T().loading} ${pct}%`)}};
+      const wasm=await dlBytes("lib/ort-wasm-simd-threaded.wasm",tick);
+      const model=await dlBytes("models/vision_fp16.onnx",tick);
+      ort.env.wasm.wasmBinary=wasm.buffer;
+      ort.env.wasm.numThreads=1;
+      CAM.ort=ort;
+      CAM.sess=await ort.InferenceSession.create(model,{executionProviders:["wasm"]});
+      camProgress("");
       return CAM;
-    })();
+    })().catch(e=>{CAM.loading=null;throw e});
   }
   return CAM.loading;
 }
@@ -576,10 +534,13 @@ function normRows(t){
   return out;
 }
 async function classifyCanvas(c){
-  const img=await CAM.TJ.RawImage.fromURL(c.toDataURL("image/jpeg",0.92));
-  const pi=await CAM.proc(img);
-  const vo=await CAM.vis(pi);
-  const e=normRows(vo.image_embeds)[0];
+  // model preprocessing: 256x256 RGB, /255, no further normalization
+  const px=c.getContext("2d").getImageData(0,0,256,256).data;
+  const N=256*256,f=new Float32Array(3*N);
+  for(let i=0;i<N;i++){f[i]=px[i*4]/255;f[N+i]=px[i*4+1]/255;f[2*N+i]=px[i*4+2]/255}
+  const t=new CAM.ort.Tensor("float32",f,[1,3,256,256]);
+  const vo=await CAM.sess.run({[CAM.sess.inputNames[0]]:t});
+  const e=normRows(vo[CAM.sess.outputNames[0]])[0];
   const sims=CAM.tEmb.map(t=>{let s=0;for(let k=0;k<e.length;k++)s+=e[k]*t[k];return s*100});
   const mx=Math.max(...sims),exps=sims.map(s=>Math.exp(s-mx)),Z=exps.reduce((a,b)=>a+b,0);
   const byG={};
@@ -619,9 +580,9 @@ $("#camShot").onclick=async()=>{
   try{
     await ensureModel();
     const v=$("#camVideo");
-    const W=v.videoWidth||448,H=v.videoHeight||448,s=Math.min(W,H);
-    const mk=f=>{const c=document.createElement("canvas");c.width=c.height=448;
-      const cs=s*f;c.getContext("2d").drawImage(v,(W-cs)/2,(H-cs)/2,cs,cs,0,0,448,448);enhance(c);return c};
+    const W=v.videoWidth||256,H=v.videoHeight||256,s=Math.min(W,H);
+    const mk=f=>{const c=document.createElement("canvas");c.width=c.height=256;
+      const cs=s*f;c.getContext("2d").drawImage(v,(W-cs)/2,(H-cs)/2,cs,cs,0,0,256,256);enhance(c);return c};
     const v1=await classifyCanvas(mk(1)),v2=await classifyCanvas(mk(0.62));
     const keys=new Set([...Object.keys(v1),...Object.keys(v2)]);
     const comb=[...keys].map(g=>({g,s:((v1[g]||0)+(v2[g]||0))/2})).sort((a,b)=>b.s-a.s);
