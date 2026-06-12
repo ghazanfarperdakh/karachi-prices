@@ -494,11 +494,18 @@ function goView(v){
 $$(".tabbar button").forEach(b=>b.onclick=()=>goView(b.dataset.view));
 $$("[data-go]").forEach(b=>b.onclick=()=>goView(b.dataset.go));
 
-/* Govt crest: logo.png only (must be uploaded with the site) — no built-in placeholder */
+/* Govt crest: logo.png only (must be uploaded with the site) — no built-in placeholder.
+   On flaky mobile networks a single failed image load must not blank the crest:
+   retry up to 3x with backoff, hide only after that. */
 function setCrests(){
   for(const id of["crestMain","crestHdr"]){
     const el=document.getElementById(id);if(!el)continue;
-    el.innerHTML=`<img src="logo.png" alt="Government of Sindh" onerror="this.remove()">`;
+    const img=new Image();img.alt="Government of Sindh";
+    let tries=0;
+    img.onerror=()=>{img.style.display="none";
+      if(++tries<=3)setTimeout(()=>{img.style.display="";img.src="logo.png?r="+tries},1200*tries)};
+    img.src="logo.png";
+    el.innerHTML="";el.appendChild(img);
   }
 }
 $("#chips").addEventListener("click",e=>{
