@@ -42,6 +42,10 @@ VEGETABLES, issued by Commissioner Karachi Division. Then:
 - Never commit any secret, token, or key to this public repo.
 
 ## Good to know
+- If the live site doesn't update within ~2 minutes of a push/merge to `main`, Vercel
+  missed the trigger (it happens) — push an empty commit to `main` to re-fire it.
+- `standee.html` = print-ready 2.5×6 ft QR standee (Sindh crest + complaint number);
+  `banner.html` = older A3 version. Both self-contained print tools.
 - `index.html` contains an embedded fallback copy of the data (`window.EMBEDDED_DATA`).
   The live site fetches `prices.json` first, so daily updates do NOT need to touch
   `index.html`. Only if item NAMES ever change (owner's instruction) must the embedded

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>اسٹینڈی — پرنٹ کے لیے (2.5 × 6 فٹ)</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Inter:wght@600;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#4a4a4a;font-family:'Noto Nastaliq Urdu',serif}
+
+/* ---- on-screen toolbar (hidden in print) ---- */
+.toolbar{background:#222;color:#fff;padding:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-family:'Inter',sans-serif;font-size:14px}
+.toolbar input{flex:1;min-width:240px;padding:10px;border-radius:8px;border:none;font-size:14px;direction:ltr}
+.toolbar button{padding:10px 22px;border:none;border-radius:8px;background:#0e6b3a;color:#fff;font-weight:700;font-size:14px;cursor:pointer}
+.toolbar .hint{width:100%;font-size:12px;color:#bbb;font-family:'Inter',sans-serif}
+
+/* ---- the standee: 762mm x 1829mm (2.5 x 6 ft roll-up) ---- */
+.wrap{zoom:.14;padding:40px 0}
+.page{width:762mm;height:1829mm;margin:0 auto;background:#fff;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 6px 60px rgba(0,0,0,.5)}
+
+.head{background:linear-gradient(168deg,#06371d,#0a522c 55%,#0d5f33);color:#fff;text-align:center;padding:55mm 30mm 40mm;position:relative}
+.head img{width:165mm;height:165mm;object-fit:contain;margin-bottom:8mm}
+.gov{font-size:24mm;line-height:2;color:#cfe3d6}
+.div{font-size:30mm;line-height:2;font-weight:700;color:#fff}
+.goldline{height:7mm;background:#c8a432}
+
+.title{background:#0e6b3a;color:#fff;text-align:center;padding:18mm 35mm 26mm}
+.title h1{font-size:37mm;line-height:2;font-weight:700}
+.title .en{font-family:'Inter',sans-serif;font-weight:800;font-size:15mm;color:#ffe9a8;letter-spacing:1mm;margin-top:6mm}
+
+.mid{flex:1;background:#f6f4ec;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14mm;padding:20mm 30mm}
+.scanme{font-family:'Inter',sans-serif;font-weight:900;font-size:26mm;color:#0a522c;letter-spacing:3mm;display:flex;align-items:center;gap:10mm}
+.scanme .arr{font-size:22mm}
+#qrcard{background:#fff;border:9mm solid #0e6b3a;outline:3mm solid #c8a432;outline-offset:6mm;border-radius:14mm;padding:18mm}
+#qrcard img,#qrcard canvas{width:400mm!important;height:400mm!important;image-rendering:pixelated;display:block}
+.scanur{font-size:24mm;line-height:2;color:#1c2520;text-align:center;font-weight:600}
+
+.feats{display:flex;flex-direction:column;gap:9mm;width:100%;padding:0 14mm}
+.feat{display:flex;align-items:center;gap:14mm;background:#fff;border:1.2mm solid #dfe3d8;border-radius:10mm;padding:8mm 18mm}
+.feat .ic{font-size:26mm;flex-shrink:0;font-family:'Inter',sans-serif}
+.feat .t{font-size:20mm;line-height:2;color:#1c2520}
+
+.complain{background:#b3372b;color:#fff;text-align:center;padding:16mm 25mm 20mm}
+.complain .q{font-size:22mm;line-height:2}
+.complain .num{font-family:'Inter',sans-serif;font-weight:900;font-size:30mm;letter-spacing:1.5mm;margin-top:2mm}
+.complain .wa{font-size:16mm;line-height:2;color:#ffd9d3}
+
+.foot{background:#06371d;color:#fff;text-align:center;padding:14mm 20mm 18mm}
+.foot .url{font-family:'Inter',sans-serif;font-weight:800;font-size:21mm;letter-spacing:.5mm;color:#ffe9a8}
+.foot .en{font-family:'Inter',sans-serif;font-size:11mm;color:#cfe3d6;margin-top:4mm}
+
+@media print{
+  body{background:#fff}
+  .toolbar{display:none}
+  .wrap{zoom:1;padding:0}
+  .page{margin:0;box-shadow:none}
+  @page{size:762mm 1829mm;margin:0}
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span>Website URL:</span>
+  <input id="url" value="https://ckpricelist.vercel.app" spellcheck="false">
+  <button onclick="makeQR()">Update QR</button>
+  <button onclick="window.print()">🖨️ Print / Save PDF</button>
+  <div class="hint">Standee size: 2.5 × 6 ft (76 × 183 cm) roll-up. "Print / Save as PDF" kar ke flex printer ko dein — QR high-resolution hai. Printer 3×6 ft ya 33×80 inch par bhi scale kar sakta hai (margins safe hain).</div>
+</div>
+
+<div class="wrap">
+<div class="page">
+
+  <div class="head">
+    <img src="logo.png" alt="Government of Sindh" onerror="this.style.display='none'">
+    <div class="gov">حکومتِ سندھ</div>
+    <div class="div">کمشنر کراچی ڈویژن</div>
+  </div>
+  <div class="goldline"></div>
+
+  <div class="title">
+    <h1>پھل اور سبزیوں کے یومیہ سرکاری نرخ</h1>
+    <div class="en">DAILY OFFICIAL FRUIT &amp; VEGETABLE PRICES</div>
+  </div>
+
+  <div class="mid">
+    <div class="scanme"><span>SCAN ME</span><span class="arr">📱</span></div>
+    <div id="qrcard"></div>
+    <div class="scanur">اسکین کریں — آج کے تازہ سرکاری نرخ اپنے موبائل پر</div>
+
+    <div class="feats">
+      <div class="feat"><span class="ic">🛒</span><div class="t">ہر پھل اور سبزی کا آج کا سرکاری بازار بھاؤ — مکمل فہرست کے ساتھ</div></div>
+      <div class="feat"><span class="ic">📷</span><div class="t">کیمرے سے پھل یا سبزی پہچانیں — قیمت فوراً سامنے</div></div>
+      <div class="feat"><span class="ic">📄</span><div class="t">سرکاری پرائس لسٹ PDF میں ڈاؤن لوڈ کریں</div></div>
+    </div>
+  </div>
+
+  <div class="complain">
+    <div class="q">دکاندار زیادہ قیمت مانگے؟ واٹس ایپ پر شکایت کریں</div>
+    <div class="num">0316-0111712</div>
+    <div class="wa">فون: 021-99203443 — کمشنر آفس کراچی ڈویژن</div>
+  </div>
+
+  <div class="foot">
+    <div class="url">ckpricelist.vercel.app</div>
+    <div class="en">Scan for today's official fruit &amp; vegetable prices — Commissioner Office, Karachi Division</div>
+  </div>
+
+</div>
+</div>
+
+<script>
+let qr=null;
+function makeQR(){
+  const u=document.getElementById('url').value.trim();
+  document.getElementById('qrcard').innerHTML="";
+  qr=new QRCode(document.getElementById('qrcard'),{
+    text:u, width:2400, height:2400,
+    correctLevel:QRCode.CorrectLevel.H
+  });
+}
+makeQR();
+</script>
+</body>
+</html>
