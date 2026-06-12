@@ -391,7 +391,13 @@ function applyLang(){
   if($("#langBtn2"))$("#langBtn2").textContent=lb;
   $$("[data-i18n]").forEach(el=>{const k=el.dataset.i18n;if(T()[k])el.textContent=T()[k]});
   $("#q").placeholder=T().srch;
-  renderDate();renderGrid();renderFull();doSearch();
+  chipCounts();renderDate();renderGrid();renderFull();doSearch();
+}
+function chipCounts(){
+  if(!DATA)return;
+  const n={all:DATA.items.length,veg:0,fruit:0};
+  for(const it of DATA.items)n[it.cat]=(n[it.cat]||0)+1;
+  $$("#chips .chip").forEach(c=>{const k=c.dataset.cat;if(T()[k])c.textContent=`${T()[k]} (${n[k]||0})`});
 }
 function renderDate(){
   if(!DATA)return;
