@@ -140,6 +140,7 @@ body.on-landing header{display:none}
 
 /* ---- download today's list ---- */
 .dlbar{display:flex;gap:8px;padding:10px 0 4px;flex-wrap:wrap}
+.dlbar a{text-decoration:none;line-height:1.8}
 .printhead{display:none}
 @media print{
   header,.tabbar,.searchbox,.chips,.sheet,.sheet-bg,footer,.dlbar,#view-landing,#view-home,#view-cam{display:none!important}
@@ -184,7 +185,7 @@ body.on-landing header{display:none}
     <div class="land-btns">
       <button class="land-btn" data-go="home"><span class="bic">🛒</span><span data-i18n="btnPrices">آج کے نرخ دیکھیں</span></button>
       <button class="land-btn alt" data-go="cam"><span class="bic">📷</span><span data-i18n="btnCam">کیمرے سے پہچانیں</span></button>
-      <button class="land-btn alt" id="landDl"><span class="bic">📥</span><span data-i18n="btnDl">آج کی فہرست محفوظ کریں</span></button>
+      <button class="land-btn alt" data-go="list"><span class="bic">📄</span><span data-i18n="btnDl">سرکاری فہرست ڈاؤن لوڈ کریں (PDF)</span></button>
       <a class="land-btn warn" id="landReport" target="_blank" rel="noopener"><span class="bic">⚠️</span><span data-i18n="btnReport">زائد قیمت کی شکایت کریں</span></a>
     </div>
     </div>
@@ -210,8 +211,8 @@ body.on-landing header{display:none}
     <div class="printhead" id="printHead"></div>
     <div style="padding:14px 0 0;font-size:.85rem;color:var(--muted);line-height:2" data-i18n="fullNote">مکمل سرکاری فہرست — بازار بھاؤ وہ زیادہ سے زیادہ قیمت ہے جو دکاندار وصول کر سکتا ہے۔</div>
     <div class="dlbar">
-      <button class="chip" id="dlImg">📥 <span data-i18n="dlImg">تصویر محفوظ کریں</span></button>
-      <button class="chip" id="dlPdf">🖨️ <span data-i18n="dlPdf">PDF / پرنٹ</span></button>
+      <a class="chip" href="docs/fruits.pdf" target="_blank" rel="noopener">📄 <span data-i18n="dlFruit">پھلوں کی سرکاری فہرست (PDF)</span></a>
+      <a class="chip" href="docs/vegetables.pdf" target="_blank" rel="noopener">📄 <span data-i18n="dlVeg">سبزیوں کی سرکاری فہرست (PDF)</span></a>
     </div>
     <table id="fullTable"></table>
   </section>
@@ -327,7 +328,7 @@ const L = {
   na:"آج دستیاب نہیں",srch:"تلاش کریں: کیلا، آلو، aam, tomato…",loading:"ماڈل لوڈ ہو رہا ہے…",
   landGov:"حکومتِ سندھ",landIssuer:"کمشنر کراچی ڈویژن",landTitle:"پھل و سبزیوں کے یومیہ سرکاری نرخ",
   btnPrices:"آج کے نرخ دیکھیں",btnCam:"کیمرے سے پہچانیں",btnReport:"زائد قیمت کی شکایت کریں",tabLand:"ہوم",btnShare:"یہ صفحہ شیئر کریں",freshOk:"✓ آج کا تازہ ریٹ",freshOld:"⚠ نئی فہرست کا انتظار ہے",whichOne:"ان میں سے کون سا ہے؟ دبا کر قیمت دیکھیں:",orMaybe:"یا شاید:",
-  btnDl:"آج کی فہرست محفوظ کریں (تصویر)",dlImg:"تصویر محفوظ کریں",dlPdf:"PDF / پرنٹ",dlPrep:"فہرست تیار ہو رہی ہے…",
+  btnDl:"سرکاری فہرست ڈاؤن لوڈ کریں (PDF)",dlFruit:"پھلوں کی سرکاری فہرست (PDF)",dlVeg:"سبزیوں کی سرکاری فہرست (PDF)",
   camDeny:"کیمرے کی اجازت نہیں ملی۔ براؤزر کی ترتیبات میں اجازت دیں۔",camHttps:"کیمرہ صرف محفوظ (https) ویب سائٹ پر چلتا ہے۔",
   guess:"ممکنہ شناخت:",noGuess:"معذرت، پہچان نہیں سکا۔ نیچے فہرست سے دیکھیں۔",items:"اقسام",
   thName:"نام",thUnit:"پیمانہ",thWhole:"منڈی بھاؤ",thRetail:"بازار بھاؤ",catVeg:"سبزیاں",catFruit:"پھل",g1:"اول",g2:"دوم",
@@ -346,7 +347,7 @@ const L = {
   na:"Not available today",srch:"Search: banana, aloo, آم …",loading:"Loading model…",
   landGov:"Government of Sindh",landIssuer:"Commissioner Karachi Division",landTitle:"Daily Official Prices — Fruits & Vegetables",
   btnPrices:"View Today's Prices",btnCam:"Identify by Camera",btnReport:"Report Overcharging",tabLand:"Home",btnShare:"Share this page",freshOk:"✓ Updated today",freshOld:"⚠ Awaiting update",whichOne:"Which one is it? Tap to see its price:",orMaybe:"Or maybe:",
-  btnDl:"Download today's list (image)",dlImg:"Save as image",dlPdf:"PDF / Print",dlPrep:"Preparing list…",
+  btnDl:"Official price list (PDF)",dlFruit:"Fruits — official list (PDF)",dlVeg:"Vegetables — official list (PDF)",
   camDeny:"Camera permission denied. Allow it in browser settings.",camHttps:"Camera only works on a secure (https) website.",
   guess:"Possible match:",noGuess:"Sorry, could not identify. Please use the list below.",items:"varieties",
   thName:"Name",thUnit:"Unit",thWhole:"Wholesale",thRetail:"Retail",catVeg:"Vegetables",catFruit:"Fruits",g1:"G1:",g2:"G2:",
@@ -638,70 +639,6 @@ function groupsOfAll(){
 }
 
 /* ============ DOWNLOAD: today's list as image / print-PDF ============ */
-async function makeListImage(){
-  const ur=lang==="ur";
-  try{
-    await document.fonts.load('600 26px "Noto Nastaliq Urdu"',"کیلا");
-    await document.fonts.load('800 28px "Inter"',"Rs 123");
-  }catch(e){}
-  const W=1080,rowH=ur?58:48,catH=62,headH=200,footH=140;
-  const items=DATA.items;
-  let H=headH+footH,lastCat="";
-  for(const it of items){if(it.cat!==lastCat){H+=catH;lastCat=it.cat}H+=rowH}
-  const c=document.createElement("canvas");c.width=W;c.height=H;
-  const x=c.getContext("2d");
-  x.fillStyle="#ffffff";x.fillRect(0,0,W,H);
-  x.fillStyle="#0a522c";x.fillRect(0,0,W,headH-34);
-  x.fillStyle="#c8a432";x.fillRect(0,headH-38,W,4);
-  x.textAlign="center";x.fillStyle="#ffffff";
-  x.font=ur?'700 36px "Noto Nastaliq Urdu"':'800 40px "Inter"';
-  x.fillText(T().title,W/2,ur?70:66);
-  x.font=ur?'600 24px "Noto Nastaliq Urdu"':'600 24px "Inter"';
-  x.fillText(T().landIssuer,W/2,ur?126:104);
-  x.fillStyle="#ffe9a8";x.font='700 26px "Inter"';
-  x.fillText($("#dateVal").textContent,W/2,headH-62);
-  let y=headH;lastCat="";let n=0;
-  for(const it of items){
-    if(it.cat!==lastCat){lastCat=it.cat;
-      x.fillStyle="#eef3ec";x.fillRect(0,y,W,catH);
-      x.fillStyle="#0a522c";x.textAlign=ur?"right":"left";
-      x.font=ur?'700 28px "Noto Nastaliq Urdu"':'800 26px "Inter"';
-      x.fillText(it.cat==="veg"?T().catVeg:T().catFruit,ur?W-40:40,y+catH-(ur?20:22));
-      y+=catH;n=0;
-    }
-    n++;
-    if(n%2===0){x.fillStyle="#f6f5ef";x.fillRect(0,y,W,rowH)}
-    x.fillStyle="#1c2520";x.textAlign=ur?"right":"left";
-    x.font=ur?'600 26px "Noto Nastaliq Urdu"':'600 24px "Inter"';
-    x.fillText(ur?it.ur:it.en,ur?W-40:40,y+rowH-(ur?22:17));
-    x.fillStyle="#5d6b62";x.font='400 17px "Inter"';
-    x.textAlign="center";x.fillText(unitTxt(it.unit),ur?300:W-300,y+rowH-19);
-    x.font='800 26px "Inter"';x.textAlign=ur?"left":"right";
-    x.fillStyle=it.retail!=null?"#0e6b3a":"#9aa39c";
-    x.fillText(it.retail!=null?"Rs "+it.retail:"—",ur?40:W-40,y+rowH-19);
-    y+=rowH;
-  }
-  x.fillStyle="#eef0e8";x.fillRect(0,y,W,footH);
-  x.fillStyle="#1c2520";x.textAlign="center";
-  x.font=ur?'600 22px "Noto Nastaliq Urdu"':'600 20px "Inter"';
-  x.fillText(ur?"شکایت واٹس ایپ: 0316-0111712 — 021-99203443":"Complaints WhatsApp: 0316-0111712 — 021-99203443",W/2,y+(ur?56:50));
-  x.fillStyle="#5d6b62";x.font='400 18px "Inter"';
-  x.fillText("ckpricelist.vercel.app",W/2,y+footH-(ur?30:40));
-  await new Promise(res=>c.toBlob(b=>{
-    const a=document.createElement("a");a.href=URL.createObjectURL(b);
-    a.download=`karachi-prices-${DATA.date||"today"}.png`;
-    document.body.appendChild(a);a.click();a.remove();
-    setTimeout(()=>URL.revokeObjectURL(a.href),5000);res();
-  },"image/png"));
-  return{w:W,h:H};
-}
-function dlImage(btn){
-  const old=btn.textContent;btn.textContent=T().dlPrep;btn.disabled=true;
-  makeListImage().catch(()=>{}).finally(()=>{btn.textContent=old;btn.disabled=false;applyLang()});
-}
-$("#landDl").onclick=e=>dlImage(e.currentTarget);
-$("#dlImg").onclick=e=>dlImage(e.currentTarget);
-$("#dlPdf").onclick=()=>{goView("list");setTimeout(()=>window.print(),250)};
 
 /* ================= BOOT ================= */
 const FALLBACK={date:"2026-06-11",day_en:"Thursday",day_ur:"جمعرات",date_ur:"11 جون 2026",whatsapp:"923160111712",items:[]};
