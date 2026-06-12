@@ -232,6 +232,7 @@ body.on-landing header{display:none}
     </div>
     <div id="camResults"></div>
     <div class="cam-note" data-i18n="camNote">یہ سہولت آزمائشی ہے اور عام پھل سبزیاں پہچانتی ہے۔ اگر نہ پہچانے تو پہلے صفحے پر تصویر والی فہرست سے دیکھیں۔</div>
+    <a class="btn-report" id="camReport" target="_blank" rel="noopener">⚠️ <span data-i18n="btnReport">زائد قیمت کی شکایت کریں</span></a>
   </section>
 
 </main>
@@ -659,6 +660,7 @@ async function boot(){
   try{const sv=localStorage.getItem("lang");if(sv)lang=sv}catch(e){}
   $("#ftWa").href=`https://wa.me/${DATA.whatsapp}`;
   if($("#landReport"))$("#landReport").href=`https://wa.me/${DATA.whatsapp}?text=${encodeURIComponent(T().waMsg("",""))}`;
+  if($("#camReport"))$("#camReport").href=`https://wa.me/${DATA.whatsapp}?text=${encodeURIComponent(T().waMsg("",""))}`;
   document.body.classList.add("on-landing");
   setCrests();
   applyLang();
