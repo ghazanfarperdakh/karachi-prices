@@ -4,10 +4,28 @@ Public site (production): **https://ckpricelist.vercel.app** — Vercel auto-dep
 within ~1 minute of a push. This repo root IS the website (`index.html` at root).
 The owner is NOT a programmer — explain in plain language, no jargon, report problems honestly.
 
+## Golden rule: GitHub is the master copy — PULL FIRST
+The owner updates prices from **two places** — the laptop AND the phone (Claude app / cloud
+sessions). Both push to the **same GitHub repo**, and **GitHub is the single source of truth**
+that the live site deploys from.
+
+Consequence: whenever the owner updates from the **phone**, the **laptop's local copy goes
+stale** until it pulls. So in any **laptop session, ALWAYS pull the latest from GitHub FIRST**,
+before reading or editing prices. Otherwise you're reading an old local `prices.json` (wrong
+date, yesterday's numbers) and every date / formula / day-over-day check runs against the wrong
+baseline. **If the laptop file and the live site disagree, the live site / GitHub is correct** —
+pull to match it; never "fix" the live site to match a stale laptop copy.
+
+On the owner's laptop specifically: the real git clone is `_deploy_tmp/` and the editable working
+copy is `website/`. "Pull first" = in `_deploy_tmp/` run `git pull origin main`, then copy
+`prices.json` + `docs/*.pdf` from `_deploy_tmp/` into `website/` — THEN start the day's update.
+
 ## Daily task: "update today's prices"
 The owner attaches the day's two official price-list files (PDFs or photos): one FRUITS, one
 VEGETABLES, issued by Commissioner Karachi Division. Then:
 
+0. **Laptop only — pull from GitHub FIRST** (see the Golden rule above) so you start from the
+   real current prices, not a stale local copy.
 1. **Read both lists carefully** (scanned government sheets; Urdu + numbers).
 2. **Update `prices.json` only:**
    - **Names are a FROZEN CATALOG.** Never rename, re-spell, or re-invent items. Match each
