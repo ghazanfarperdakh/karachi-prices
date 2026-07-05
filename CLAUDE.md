@@ -51,10 +51,20 @@ VEGETABLES, issued by Commissioner Karachi Division. Then:
 5. Give the owner a short plain-language summary: how many prices changed, anything
    new/missing, and anything you flagged.
 
+## Camera AI (since July 2026): server-side via Gemini
+- `api/identify.js` is a Vercel serverless function: the phone sends a ~50KB photo,
+  the function asks Google **Gemini** (default `gemini-2.5-flash-lite`) which catalog
+  group it shows, and returns `{group, confidence, second}` to the page.
+- The API key lives ONLY in Vercel → Settings → Environment Variables (`GEMINI_API_KEY`).
+  **Never commit any key to this public repo.** `GEMINI_MODEL` env var overrides the model.
+- Billing = the owner's Google AI Studio project (prepaid credits). If the camera shows
+  "could not reach server" for everyone, first suspect: credits ran out (Google returns 429).
+- Abuse brakes: ~30 scans/day per phone (localStorage) + per-IP daily limit in the function.
+
 ## Do not touch (unless explicitly asked)
-- `lib/` and `models/` — the camera AI. It is a self-hosted fp16 MobileCLIP; 8-bit/quantized
-  versions of this model are BROKEN (verified) — never "optimize" or replace these files.
-  Prompt embeddings are pre-computed on the owner's PC (`model-build/` there).
+- `lib/` and `models/` — the OLD on-device camera AI (fp16 MobileCLIP), RETIRED July 2026
+  but kept as a backup; its code sits unused in index.html. Never "optimize", quantize,
+  or delete these files. Prompt embeddings were pre-computed on the owner's PC (`model-build/`).
 - `logo.png`, favicons, `manifest.json`, `banner.html`.
 - The `gh-pages` branch is a retired mirror — ignore it.
 - Never commit any secret, token, or key to this public repo.
