@@ -45,7 +45,7 @@ header .wrap{padding:0}
 .searchbox input:focus{outline:none;border-color:var(--accent)}
 
 .chips{display:flex;gap:8px;padding:8px 0;flex-wrap:wrap}
-.chip{border:1.5px solid var(--green);background:#fff;color:var(--green);border-radius:20px;padding:5px 16px;font-size:.85rem;cursor:pointer;font-family:inherit;line-height:1.8}
+.chip{border:1.5px solid var(--green);background:#fff;color:var(--green);border-radius:20px;padding:8px 18px;font-size:.85rem;cursor:pointer;font-family:inherit;line-height:1.8;min-height:44px;display:inline-flex;align-items:center}
 .chip.on{background:var(--green);color:#fff}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(102px,1fr));gap:10px;padding:8px 0 20px}
@@ -54,15 +54,16 @@ header .wrap{padding:0}
 .tile .ic{font-size:2rem;line-height:1.2;height:44px;display:flex;align-items:center;justify-content:center}
 .tile .ic .txtic{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:#fff;line-height:2.4}
 .tile .nm{font-size:.82rem;font-weight:600;line-height:1.9;margin-top:2px}
-.tile .pr{font-size:.72rem;color:var(--green);font-weight:700;font-family:'Inter',sans-serif}
+.tile .pr{font-size:.82rem;color:var(--green);font-weight:700;font-family:'Inter',sans-serif}
 
 .rows{display:flex;flex-direction:column;gap:8px;padding:6px 0 20px}
 .row{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
 .row .l .n{font-size:.95rem;font-weight:600;line-height:1.9}
-.row .l .u{font-size:.72rem;color:var(--muted);line-height:1.8}
+.row .l .u{font-size:.8rem;color:var(--muted);line-height:1.8}
 .row .p{text-align:left;flex-shrink:0}
 .row .p .big{font-size:1.45rem;font-weight:800;color:var(--green);font-family:'Inter',sans-serif;line-height:1.1}
-.row .p .sm{font-size:.68rem;color:var(--muted)}
+.row .p .sm{font-size:.78rem;color:var(--muted)}
+#searchRows .row{cursor:pointer}
 .row .p .na{font-size:.8rem;color:var(--muted)}
 body.en .row .p{text-align:right}
 
@@ -89,16 +90,18 @@ body.en .row .p{text-align:right}
 .fulllist td.num{font-family:'Inter',sans-serif;font-weight:700;color:var(--green);white-space:nowrap}
 .fulllist tr.cathead td{background:#eef3ec;font-weight:700;color:var(--green-dark)}
 
-.cam-stage{background:#10140f;border-radius:16px;overflow:hidden;position:relative;min-height:300px;display:flex;align-items:center;justify-content:center;margin-top:10px}
-.cam-stage video{width:100%;max-height:46vh;object-fit:cover;display:block}
+.cam-stage{background:#10140f;border-radius:16px;overflow:hidden;position:relative;min-height:220px;display:flex;align-items:center;justify-content:center;margin-top:10px}
+/* square preview = exactly the square that gets photographed (WYSIWYG) */
+.cam-stage video{width:min(100%,46vh);aspect-ratio:1/1;max-height:46vh;object-fit:cover;display:block}
 .cam-msg{color:#dfe7dc;text-align:center;padding:30px 20px;font-size:.9rem;line-height:2.1}
 .cam-controls{display:flex;gap:10px;margin-top:12px}
 .btn{flex:1;border:none;border-radius:14px;padding:14px;font-size:1rem;font-family:inherit;cursor:pointer;line-height:1.9}
 .btn.primary{background:var(--green);color:#fff;font-weight:700}
 .btn.ghost{background:#fff;border:1.5px solid var(--green);color:var(--green)}
+.btn:disabled{opacity:.55}
 .beta{display:inline-block;background:var(--accent);color:#3d3000;font-size:.62rem;border-radius:8px;padding:2px 8px;font-family:'Inter',sans-serif;font-weight:800;vertical-align:middle;margin-inline-start:6px}
 .cam-note{font-size:.78rem;color:var(--muted);line-height:2;margin-top:10px;background:#fff;border:1px dashed var(--line);border-radius:10px;padding:8px 12px}
-#camResults{padding:10px 0}
+#camResults{padding:10px 0;scroll-margin-top:8px}
 .guess{font-size:.8rem;color:var(--muted);padding:4px 2px;line-height:1.9}
 
 footer{margin-top:26px;background:#eef0e8;border-top:1px solid var(--line);padding:18px 16px 24px;font-size:.78rem;color:var(--muted);line-height:2.2}
@@ -140,7 +143,7 @@ body.on-landing header{display:none}
 
 /* ---- download today's list ---- */
 .dlbar{display:flex;gap:8px;padding:10px 0 4px;flex-wrap:wrap}
-.dlbar a{text-decoration:none;line-height:1.8}
+.dlbar a{text-decoration:none;line-height:1.8;background:var(--green);color:#fff;border-color:var(--green);font-weight:700}
 .printhead{display:none}
 @media print{
   header,.tabbar,.searchbox,.chips,.sheet,.sheet-bg,footer,.dlbar,#view-landing,#view-home,#view-cam{display:none!important}
@@ -248,6 +251,7 @@ body.on-landing header{display:none}
 <div class="sheet-bg" id="sheetBg"></div>
 <div class="sheet" id="sheet">
   <div class="grab"></div>
+  <button id="shClose" aria-label="بند کریں / close" style="position:absolute;top:10px;inset-inline-end:12px;width:44px;height:44px;border:none;background:#e7e4d9;border-radius:50%;font-size:1.1rem;cursor:pointer">✕</button>
   <h2 id="shTitle"></h2>
   <div class="src" id="shSrc"></div>
   <div class="rows" id="shRows"></div>
@@ -323,6 +327,8 @@ const L = {
   camNote:"ایک وقت میں ایک ہی پھل یا سبزی، قریب سے اور روشنی میں دکھائیں۔ تصویر شناخت کے لیے سرور کو بھیجی جاتی ہے (تقریباً 50KB)۔ نہ پہچانے تو تصویر والی فہرست استعمال کریں۔",
   camBusy:"آج کے لیے کیمرہ اسکین کی حد پوری ہو گئی — کل دوبارہ کوشش کریں یا فہرست استعمال کریں۔",
   camOffline:"سرور سے رابطہ نہیں ہو سکا — انٹرنیٹ چیک کریں اور دوبارہ کوشش کریں۔",
+  camWait:"پہچانی جا رہی ہے — چند سیکنڈ…",
+  camDown:"سروس اس وقت مصروف ہے — تھوڑی دیر بعد دوبارہ کوشش کریں، یا فہرست استعمال کریں۔",
   ftIssued:"یہ نرخ کمشنر آفس کراچی ڈویژن کی جانب سے جاری کردہ ہیں۔",
   ftMargin:"منڈی بھاؤ = بولی بھاؤ + 6% ، بازار بھاؤ = منڈی بھاؤ + 15%",
   ftComplain:"زائد قیمت کی شکایت واٹس ایپ پر کریں:",ftNote:"نوٹ: پرائس لسٹ عوام الناس کی سہولت کے لیے جاری کی جاتی ہے۔",
@@ -331,7 +337,7 @@ const L = {
   na:"آج دستیاب نہیں",srch:"تلاش کریں: کیلا، آلو، aam, tomato…",loading:"ماڈل لوڈ ہو رہا ہے…",
   landGov:"حکومتِ سندھ",landIssuer:"کمشنر کراچی ڈویژن",landTitle:"پھل و سبزیوں کے یومیہ سرکاری نرخ",
   btnPrices:"آج کے نرخ دیکھیں",btnCam:"کیمرے سے پہچانیں",btnReport:"زائد قیمت کی شکایت کریں",tabLand:"ہوم",btnShare:"یہ صفحہ شیئر کریں",freshOk:"✓ آج کا تازہ ریٹ",freshOld:"⚠ نئی فہرست کا انتظار ہے",whichOne:"ان میں سے کون سا ہے؟ دبا کر قیمت دیکھیں:",orMaybe:"یا شاید:",
-  btnDl:"سرکاری فہرست ڈاؤن لوڈ کریں (PDF)",dlFruit:"پھلوں کی سرکاری فہرست (PDF)",dlVeg:"سبزیوں کی سرکاری فہرست (PDF)",
+  btnDl:"مکمل فہرست اور PDF ڈاؤن لوڈ",dlFruit:"پھلوں کی سرکاری فہرست (PDF)",dlVeg:"سبزیوں کی سرکاری فہرست (PDF)",
   camDeny:"کیمرے کی اجازت نہیں ملی۔ براؤزر کی ترتیبات میں اجازت دیں۔",camHttps:"کیمرہ صرف محفوظ (https) ویب سائٹ پر چلتا ہے۔",
   guess:"ممکنہ شناخت:",noGuess:"معذرت، پہچان نہیں سکا۔ نیچے فہرست سے دیکھیں۔",noProduce:"یہاں کوئی پھل یا سبزی نظر نہیں آئی — ایک چیز کو قریب اور روشنی میں دکھائیں۔",items:"اقسام",
   thName:"نام",thUnit:"پیمانہ",thWhole:"منڈی بھاؤ",thRetail:"بازار بھاؤ",catVeg:"سبزیاں",catFruit:"پھل",g1:"اول",g2:"دوم",
@@ -344,6 +350,8 @@ const L = {
   camNote:"Show ONE fruit/vegetable at a time, close up and in light. The photo is sent to a secure server for identification (~50 KB). If unsure, use the picture list.",
   camBusy:"Daily camera limit reached — try again tomorrow or use the list.",
   camOffline:"Could not reach the server — check your internet and try again.",
+  camWait:"Identifying — a few seconds…",
+  camDown:"Service is busy right now — try again in a while, or use the list.",
   ftIssued:"These rates are notified by Commissioner Office, Karachi Division.",
   ftMargin:"Wholesale = auction + 6% · Retail = wholesale + 15%",
   ftComplain:"Report overcharging on WhatsApp:",ftNote:"Note: This price list is issued for the convenience of the public.",
@@ -352,14 +360,14 @@ const L = {
   na:"Not available today",srch:"Search: banana, aloo, آم …",loading:"Loading model…",
   landGov:"Government of Sindh",landIssuer:"Commissioner Karachi Division",landTitle:"Daily Official Prices — Fruits & Vegetables",
   btnPrices:"View Today's Prices",btnCam:"Identify by Camera",btnReport:"Report Overcharging",tabLand:"Home",btnShare:"Share this page",freshOk:"✓ Updated today",freshOld:"⚠ Awaiting update",whichOne:"Which one is it? Tap to see its price:",orMaybe:"Or maybe:",
-  btnDl:"Official price list (PDF)",dlFruit:"Fruits — official list (PDF)",dlVeg:"Vegetables — official list (PDF)",
+  btnDl:"Full list & PDF download",dlFruit:"Fruits — official list (PDF)",dlVeg:"Vegetables — official list (PDF)",
   camDeny:"Camera permission denied. Allow it in browser settings.",camHttps:"Camera only works on a secure (https) website.",
   guess:"Possible match:",noGuess:"Sorry, could not identify. Please use the list below.",noProduce:"No fruit or vegetable seen here — hold ONE item close, in good light.",items:"varieties",
   thName:"Name",thUnit:"Unit",thWhole:"Wholesale",thRetail:"Retail",catVeg:"Vegetables",catFruit:"Fruits",g1:"G1:",g2:"G2:",
   waMsg:(item,price)=>`Assalam o Alaikum, I want to report overcharging.\nItem: ${item}\nOfficial retail price: Rs ${price}\nShopkeeper's price: \nLocation/shop: `}
 };
 
-let DATA=null, lang="en", cat="all";
+let DATA=null, lang="ur", cat="all";
 
 /* ================= HELPERS ================= */
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
@@ -432,7 +440,9 @@ function renderDate(){
   if($("#landDate"))$("#landDate").textContent=$("#dateVal").textContent;
   const fb=$("#freshBadge");
   if(fb){const t=new Date(),iso=t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");
-    const ok=iso===DATA.date;fb.textContent=ok?T().freshOk:T().freshOld;fb.className="fresh "+(ok?"ok":"old");}
+    const ok=iso===DATA.date;
+    fb.textContent=ok?T().freshOk:T().freshOld+" — "+(lang==="ur"?DATA.date_ur:enDate);
+    fb.className="fresh "+(ok?"ok":"old");}
   if($("#printHead"))$("#printHead").textContent=`${T().title} — ${T().landIssuer} — ${$("#dateVal").textContent}`;
 }
 function renderGrid(){
@@ -449,7 +459,7 @@ function rowHtml(it){
   const p=it.retail!=null
     ?`<div class="big">Rs ${it.retail}</div>`
     :`<div class="na">${T().na}</div>`;
-  return `<div class="row"><div class="l"><div class="n">${iname(it)}</div><div class="u">${unitTxt(it.unit)}</div></div><div class="p">${p}</div></div>`;
+  return `<div class="row" data-g="${it.group}"><div class="l"><div class="n">${iname(it)}</div><div class="u">${unitTxt(it.unit)}</div></div><div class="p">${p}</div></div>`;
 }
 function openSheet(gid,items){
   $("#shTitle").innerHTML=`${GROUPS[gid].icon??""} ${gname(gid)} <span style="font-size:.7rem;color:var(--muted)">(${items.length} ${T().items})</span>`;
@@ -459,6 +469,7 @@ function openSheet(gid,items){
   const msg=T().waMsg(lang==="ur"?GROUPS[gid].ur:GROUPS[gid].en, first?first.retail:"—");
   $("#shReport").href=`https://wa.me/${DATA.whatsapp}?text=${encodeURIComponent(msg)}`;
   $("#sheetBg").classList.add("open");$("#sheet").classList.add("open");
+  try{history.pushState({sheet:1},"")}catch(e){}
 }
 function closeSheet(){$("#sheetBg").classList.remove("open");$("#sheet").classList.remove("open")}
 function renderFull(){
@@ -489,13 +500,23 @@ function doSearch(){
 }
 
 /* ================= NAV / EVENTS ================= */
+let curView="landing",NAV_POP=false;
 function goView(v){
   $$(".tabbar button").forEach(x=>x.classList.toggle("on",x.dataset.view===v));
   $$(".view").forEach(x=>x.classList.remove("on"));
   $("#view-"+v).classList.add("on");
   document.body.classList.toggle("on-landing",v==="landing");
   window.scrollTo({top:0});
+  /* Android back button: each view change becomes a history entry, so Back
+     returns to the app's previous screen instead of leaving the site */
+  if(v!==curView&&!NAV_POP&&v!=="landing"){try{history.pushState({v},"")}catch(e){}}
+  curView=v;
+  if(v!=="cam")stopCam();
 }
+window.addEventListener("popstate",e=>{
+  if($("#sheet").classList.contains("open")){closeSheet();return}
+  NAV_POP=true;goView((e.state&&e.state.v)||"landing");NAV_POP=false;
+});
 $$(".tabbar button").forEach(b=>b.onclick=()=>goView(b.dataset.view));
 $$("[data-go]").forEach(b=>b.onclick=()=>goView(b.dataset.go));
 
@@ -520,7 +541,13 @@ $("#chips").addEventListener("click",e=>{
 });
 $("#q").addEventListener("input",doSearch);
 $("#sheetBg").onclick=closeSheet;
+$("#shClose").onclick=closeSheet;
 $("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet")closeSheet()});
+/* search results open the same price sheet as the picture tiles */
+$("#searchRows").addEventListener("click",e=>{
+  const r=e.target.closest("[data-g]");
+  if(r)openSheet(r.dataset.g,groupsOfAll().get(r.dataset.g));
+});
 function toggleLang(){lang=lang==="ur"?"en":"ur";try{localStorage.setItem("lang",lang)}catch(e){};applyLang()}
 $("#langBtn").onclick=toggleLang;
 if($("#langBtn2"))$("#langBtn2").onclick=toggleLang;
@@ -627,19 +654,33 @@ function camCardHtml(g,all){
   return `<div style="margin:12px 0 4px;font-weight:700;line-height:2">${iconHtml(g)} ${gname(g)}</div>`
     +all.get(g).map(rowHtml).join("");
 }
+function stopCam(){
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
+  const vid=$("#camVideo");vid.srcObject=null;vid.style.display="none";
+  $("#camMsg").style.display="";
+  $("#camShot").style.display="none";$("#camStart").style.display="";
+}
+document.addEventListener("visibilitychange",()=>{if(document.hidden)stopCam()});
 $("#camShot").onclick=async()=>{
-  const res=$("#camResults");
-  if(!camQuota(false)){res.innerHTML=`<div class="empty">${T().camBusy}</div>`;return}
-  res.innerHTML=`<div class="guess"><span class="spin"></span> …</div>`;
+  const res=$("#camResults"),btn=$("#camShot");
+  if(btn.disabled)return;
+  if(!camQuota(false)){res.innerHTML=`<div class="empty">${T().camBusy}</div>`;
+    res.scrollIntoView({behavior:"smooth",block:"start"});return}
+  const v=$("#camVideo");
+  if(!v.videoWidth){res.innerHTML=`<div class="guess">${T().camIntro}</div>`;return}
+  btn.disabled=true;
+  res.innerHTML=`<div class="guess"><span class="spin"></span> ${T().camWait}</div>`;
+  res.scrollIntoView({behavior:"smooth",block:"start"});
   try{
-    const v=$("#camVideo");
-    const W=v.videoWidth||512,H=v.videoHeight||512,s=Math.min(W,H);
+    const W=v.videoWidth,H=v.videoHeight,s=Math.min(W,H);
     const c=document.createElement("canvas");c.width=c.height=512;
     c.getContext("2d").drawImage(v,(W-s)/2,(H-s)/2,s,s,0,0,512,512);
     const r=await fetch("api/identify",{method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({image:c.toDataURL("image/jpeg",0.8)})});
     if(r.status===429){res.innerHTML=`<div class="empty">${T().camBusy}</div>`;return}
+    if(r.status===502||r.status===503||r.status===504){
+      res.innerHTML=`<div class="empty">${T().camDown}</div>`;return}
     if(!r.ok)throw new Error("server "+r.status);
     const out=await r.json();
     camQuota(true);
@@ -658,6 +699,7 @@ $("#camShot").onclick=async()=>{
         +(out.confidence!=="high"&&second?`<div class="guess">${T().orMaybe} ${gname(second)}</div>`:"");
     }
   }catch(e){res.innerHTML=`<div class="empty">${T().camOffline}</div>`}
+  finally{btn.disabled=false}
 };
 function groupsOfAll(){
   const m=new Map();
