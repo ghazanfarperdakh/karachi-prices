@@ -320,7 +320,9 @@ const L = {
   fullNote:"مکمل سرکاری فہرست — بازار بھاؤ وہ زیادہ سے زیادہ قیمت ہے جو دکاندار وصول کر سکتا ہے۔",
   camTitle:"کیمرے سے پہچانیں",camIntro:"کیمرہ کھولیں، پھل یا سبزی کی طرف رکھیں، اور «پہچانیں» دبائیں",
   camOpen:"کیمرہ کھولیں",camIdentify:"پہچانیں 📸",
-  camNote:"ایک وقت میں ایک ہی پھل یا سبزی، قریب سے اور روشنی میں دکھائیں۔ پہلی بار تقریباً 35MB ڈاؤن لوڈ ہوگا — Wi-Fi بہتر ہے (صرف ایک بار)۔ نہ پہچانے تو تصویر والی فہرست استعمال کریں۔",
+  camNote:"ایک وقت میں ایک ہی پھل یا سبزی، قریب سے اور روشنی میں دکھائیں۔ تصویر شناخت کے لیے سرور کو بھیجی جاتی ہے (تقریباً 50KB)۔ نہ پہچانے تو تصویر والی فہرست استعمال کریں۔",
+  camBusy:"آج کے لیے کیمرہ اسکین کی حد پوری ہو گئی — کل دوبارہ کوشش کریں یا فہرست استعمال کریں۔",
+  camOffline:"سرور سے رابطہ نہیں ہو سکا — انٹرنیٹ چیک کریں اور دوبارہ کوشش کریں۔",
   ftIssued:"یہ نرخ کمشنر آفس کراچی ڈویژن کی جانب سے جاری کردہ ہیں۔",
   ftMargin:"منڈی بھاؤ = بولی بھاؤ + 6% ، بازار بھاؤ = منڈی بھاؤ + 15%",
   ftComplain:"زائد قیمت کی شکایت واٹس ایپ پر کریں:",ftNote:"نوٹ: پرائس لسٹ عوام الناس کی سہولت کے لیے جاری کی جاتی ہے۔",
@@ -339,7 +341,9 @@ const L = {
   fullNote:"Complete official list — the retail price is the maximum a shopkeeper may charge.",
   camTitle:"Identify by Camera",camIntro:"Open the camera, point at a fruit or vegetable, then tap “Identify”",
   camOpen:"Open Camera",camIdentify:"Identify 📸",
-  camNote:"Show ONE fruit/vegetable at a time, close up and in light. First use downloads ~35MB — Wi-Fi recommended (one time only). If unsure, use the picture list.",
+  camNote:"Show ONE fruit/vegetable at a time, close up and in light. The photo is sent to a secure server for identification (~50 KB). If unsure, use the picture list.",
+  camBusy:"Daily camera limit reached — try again tomorrow or use the list.",
+  camOffline:"Could not reach the server — check your internet and try again.",
   ftIssued:"These rates are notified by Commissioner Office, Karachi Division.",
   ftMargin:"Wholesale = auction + 6% · Retail = wholesale + 15%",
   ftComplain:"Report overcharging on WhatsApp:",ftNote:"Note: This price list is issued for the convenience of the public.",
@@ -521,10 +525,11 @@ function toggleLang(){lang=lang==="ur"?"en":"ur";try{localStorage.setItem("lang"
 $("#langBtn").onclick=toggleLang;
 if($("#langBtn2"))$("#langBtn2").onclick=toggleLang;
 
-/* ============ CAMERA — produce AI: zero-shot ensemble (multi-prompt x multi-view, soft voting) ============
-   Vision-only MobileCLIP, self-hosted in lib/ + models/ (no third-party CDN).
-   Text-prompt embeddings are pre-computed by model-build/make_embeds.mjs into
-   models/text_embeds.json — edit prompts THERE, re-run it, upload the new json. */
+/* ============ CAMERA — identification now runs on the SERVER (api/identify.js -> Gemini).
+   The phone sends a ~50KB photo and gets the answer back in a couple of seconds;
+   no 35MB download any more.
+   The old on-device MobileCLIP path below (ensureModel/classifyCanvas/enhance)
+   is RETIRED but kept as backup, together with lib/ + models/ — do not delete. */
 let CAM={ort:null,sess:null,tEmb:null,gids:[],loading:null};
 let stream=null;
 const CAM_TOTAL=35820000; // ~bytes of engine+model, only for the progress %
@@ -605,44 +610,54 @@ $("#camStart").onclick=async()=>{
     stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"},audio:false});
     v.srcObject=stream;v.style.display="block";msg.style.display="none";
     $("#camShot").style.display="block";$("#camStart").style.display="none";
-    ensureModel().catch(()=>{});
   }catch(e){msg.textContent=T().camDeny}
 };
+/* local per-phone daily cap — first brake before the server's own limits */
+const CAM_DAY_MAX=30;
+function camQuota(bump){
+  let q={d:"",n:0};
+  try{q=JSON.parse(localStorage.getItem("camQuota"))||q}catch(e){}
+  const today=new Date().toISOString().slice(0,10);
+  if(q.d!==today)q={d:today,n:0};
+  if(q.n>=CAM_DAY_MAX)return false;
+  if(bump){q.n++;try{localStorage.setItem("camQuota",JSON.stringify(q))}catch(e){}}
+  return true;
+}
+function camCardHtml(g,all){
+  return `<div style="margin:12px 0 4px;font-weight:700;line-height:2">${iconHtml(g)} ${gname(g)}</div>`
+    +all.get(g).map(rowHtml).join("");
+}
 $("#camShot").onclick=async()=>{
   const res=$("#camResults");
+  if(!camQuota(false)){res.innerHTML=`<div class="empty">${T().camBusy}</div>`;return}
   res.innerHTML=`<div class="guess"><span class="spin"></span> …</div>`;
   try{
-    await ensureModel();
     const v=$("#camVideo");
-    const W=v.videoWidth||256,H=v.videoHeight||256,s=Math.min(W,H);
-    const mk=f=>{const c=document.createElement("canvas");c.width=c.height=256;
-      const cs=s*f;c.getContext("2d").drawImage(v,(W-cs)/2,(H-cs)/2,cs,cs,0,0,256,256);enhance(c);return c};
-    const v1=await classifyCanvas(mk(1)),v2=await classifyCanvas(mk(0.62));
-    // "_neg" = the not-a-fruit/vegetable group (laptop, face, wall...) — reject
-    // instead of force-guessing. Calibrated: produce photos <1% neg, non-produce >88%.
-    const negShare=((v1._neg||0)+(v2._neg||0))/2;
-    if(negShare>0.25){res.innerHTML=`<div class="empty">${T().noProduce}</div>`;return}
-    const keys=new Set([...Object.keys(v1),...Object.keys(v2)]);
-    const comb=[...keys].map(g=>({g,s:((v1[g]||0)+(v2[g]||0))/2})).sort((a,b)=>b.s-a.s);
-    const prodTop=o=>Object.entries(o).filter(([g])=>g!=="_neg").sort((a,b)=>b[1]-a[1])[0][0];
-    const t1=prodTop(v1),t2=prodTop(v2);
-    const agree=t1===t2;
+    const W=v.videoWidth||512,H=v.videoHeight||512,s=Math.min(W,H);
+    const c=document.createElement("canvas");c.width=c.height=512;
+    c.getContext("2d").drawImage(v,(W-s)/2,(H-s)/2,s,s,0,0,512,512);
+    const r=await fetch("api/identify",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({image:c.toDataURL("image/jpeg",0.8)})});
+    if(r.status===429){res.innerHTML=`<div class="empty">${T().camBusy}</div>`;return}
+    if(!r.ok)throw new Error("server "+r.status);
+    const out=await r.json();
+    camQuota(true);
     const all=groupsOfAll();
-    const top=comb.filter(x=>all.has(x.g)).slice(0,3);
-    if(!top.length||top[0].s<0.12){res.innerHTML=`<div class="empty">${T().noGuess}</div>`;return}
-    if(agree&&top[0].s>=0.45){
-      const g=top[0].g;
-      res.innerHTML=`<div style="margin:12px 0 4px;font-weight:700;line-height:2">${iconHtml(g)} ${gname(g)} <span style="font-family:'Inter',sans-serif;font-size:.72rem;color:var(--muted)">${Math.round(top[0].s*100)}%</span></div>`
-        +all.get(g).map(rowHtml).join("")
-        +(top[1]&&top[1].s>0.15?`<div class="guess">${T().orMaybe} ${gname(top[1].g)} (${Math.round(top[1].s*100)}%)</div>`:"");
-    }else{
+    if(!out.group||out.group==="none"||!all.has(out.group)){
+      res.innerHTML=`<div class="empty">${T().noProduce}</div>`;return}
+    const second=out.second&&all.has(out.second)?out.second:null;
+    if(out.confidence==="low"&&second){
       res.innerHTML=`<div class="guess" style="font-weight:700">${T().whichOne}</div>`
         +`<div style="display:flex;gap:8px;flex-wrap:wrap;padding:6px 0">`
-        +top.map(x=>`<button class="chip" style="display:flex;align-items:center;gap:6px" data-pick="${x.g}">${iconHtml(x.g)} ${gname(x.g)} <b style="font-family:'Inter',sans-serif">${Math.round(x.s*100)}%</b></button>`).join("")
+        +[out.group,second].map(g=>`<button class="chip" style="display:flex;align-items:center;gap:6px" data-pick="${g}">${iconHtml(g)} ${gname(g)}</button>`).join("")
         +`</div>`;
       res.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>openSheet(b.dataset.pick,all.get(b.dataset.pick)));
+    }else{
+      res.innerHTML=camCardHtml(out.group,all)
+        +(out.confidence!=="high"&&second?`<div class="guess">${T().orMaybe} ${gname(second)}</div>`:"");
     }
-  }catch(e){res.innerHTML=`<div class="empty">${T().noGuess}</div>`}
+  }catch(e){res.innerHTML=`<div class="empty">${T().camOffline}</div>`}
 };
 function groupsOfAll(){
   const m=new Map();
