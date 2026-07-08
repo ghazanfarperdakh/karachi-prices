@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "ckpricelist.vercel.app" }],
+      "destination": "https://ckpricelist.com/:path*",
+      "permanent": true
+    }
+  ]
+}
